@@ -10,6 +10,15 @@
 
 ---
 
+## 两层架构（对标 caveman）
+
+| 层 | 实现 | 作用 |
+|---|---|---|
+| **人格层** | `SKILL.md` | 教 agent 用文言思维压缩输出（灵活，覆盖词典外） |
+| **机制层** | `xizi/` 确定性压缩器 | 词典 + 规则确定性压缩（可复现、免费、词典可插拔） |
+
+---
+
 ## 三层压缩档
 
 | 档 | 命令 | 风格 | 压缩率 |
@@ -18,7 +27,7 @@
 | 惜字档 | `/xizi` | 成语 + 极限单字 | 高 |
 | 黑话档 | `/heihua` | A 股 / 垂直术语缩写 | 最高（领域化） |
 
-示例：
+示例（`SKILL.md` 人格层输出）：
 
 - 原句：`你的 React 组件在重新渲染，原因是每次渲染都创建了新的对象引用，导致 props 变化。`
 - `/wenyan`：`每渲染新对象引用，故重渲染。useMemo 包之。`
@@ -52,20 +61,25 @@ uv run python -m eval.semantic_eval      # 语义保真 + 阴性对照
 ## 安装
 
 ```bash
-bash install.sh
+uv sync            # Python 依赖（tiktoken + xizi 包）
+bash install.sh    # 把 SKILL.md 装到 Claude Code / Codex / opencode
 ```
 
-或手动复制 `SKILL.md` 到 harness 的 skills 目录（见 `adapters/`）：支持 **Claude Code / Codex / opencode**。
+## 使用
 
-## 怎么用
+**方式一：agent 里装 skill** —— 装好后在 agent 里输入 `/xizi` / `/wenyan` / `/heihua`，或说「省 token / 说短点 / 惜字」。
 
-装好后，在 agent 里输入：
+**方式二：CLI 直接压缩**（确定性、可复现、payload 保护）：
 
-- `/xizi` 惜字档（默认，成语 + 极限单字）
-- `/wenyan` 文言档
-- `/heihua` A 股黑话档
+```bash
+python -m xizi.cli xizi "因为现在可以处理这个问题，所以需要修改代码"
+# 因今可理此题，故需改代码
 
-或直接说「省 token / 说短点 / 惜字」。
+python -m xizi.cli heihua "在股价低位时买入"
+# 抄底
+```
+
+三层档：`wenyan`（单字）/ `xizi`（单字 + 短语）/ `heihua`（A 股黑话）。可插拔词典：`xizi/glossary/` 下每个文件是一个领域词典，加新领域（医疗 / 法律 / 体制内）只需加一个文件、不改核心逻辑。
 
 ---
 
