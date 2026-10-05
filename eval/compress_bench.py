@@ -1,7 +1,9 @@
 """压缩率基准（P2 评测门核心）。
 
-读 golden 集，用 tiktoken o200k 数「原句 vs 压缩句」token，
-算压缩率 = 压缩后 / 原；能红断言：每条压缩率 ≤ 0.75（即省 ≥25%）。
+读多个 golden 集，用 tiktoken o200k 数「原句 vs 压缩句」token，
+算压缩率 = 压缩后 / 原；能红断言：总体压缩率 ≤ 0.75（即省 ≥25%）。
+
+分场景统计：精炼技术句 vs 冗余中文句，诚实报告「冗余中文省更多」。
 
 可复现：纯确定性计算，无 LLM、无网络，任何人 `python -m eval.compress_bench`
 得到同样数字。
@@ -16,20 +18,34 @@ import sys
 
 from .token_counter import compression_ratio, count_tokens
 
-GOLDEN_PATH = os.path.join(os.path.dirname(__file__), "datasets", "golden_zh.jsonl")
+DATASETS_DIR = os.path.join(os.path.dirname(__file__), "datasets")
 
-# 能红断言阈值：压缩率 ≤0.75（省 ≥25%）。方案 §7。
+# 多个 golden 集：精炼技术句 + 冗余中文句（模拟 agent 真实啰嗦输出）
+GOLDEN_FILES = ["golden_zh.jsonl", "golden_zh_redundant.jsonl"]
+
+# 能红断言阈值：总体压缩率 ≤0.75（省 ≥25%）。方案 §7。
 ASSERT_RATIO = 0.75
 
 
-def load_golden(path: str = GOLDEN_PATH) -> list[dict]:
-    """读取 golden 集（jsonl），每行 {id, domain, answer, compressed}。"""
+def load_golden(path: str) -> list[dict]:
+    """读取单个 golden 集（jsonl），每行 {id, domain, answer, compressed}，补 source。"""
+    source = os.path.basename(path)
     items: list[dict] = []
     with open(path, encoding="utf-8") as f:
         for line in f:
             line = line.strip()
             if line:
-                items.append(json.loads(line))
+                it = json.loads(line)
+                it["source"] = source
+                items.append(it)
+    return items
+
+
+def load_all(files: list[str] = GOLDEN_FILES) -> list[dict]:
+    """读取全部 golden 集。"""
+    items: list[dict] = []
+    for f in files:
+        items.extend(load_golden(os.path.join(DATASETS_DIR, f)))
     return items
 
 
@@ -49,23 +65,26 @@ def bench(items: list[dict]) -> list[dict]:
     return rows
 
 
-def summarize(rows: list[dict]) -> dict:
-    """汇总：总体 + 分领域统计。"""
-    ratios = [r["ratio"] for r in rows]
-    by_domain: dict[str, list[float]] = {}
+def _group_stats(rows: list[dict], key: str) -> dict[str, dict]:
+    """按 key（source / domain）分组统计压缩率。"""
+    grouped: dict[str, list[float]] = {}
     for r in rows:
-        by_domain.setdefault(r["domain"], []).append(r["ratio"])
-
-    total_orig = sum(r["orig_tokens"] for r in rows)
-    total_comp = sum(r["comp_tokens"] for r in rows)
-
-    domain_stats = {}
-    for d, rs in sorted(by_domain.items()):
-        domain_stats[d] = {
+        grouped.setdefault(r[key], []).append(r["ratio"])
+    return {
+        k: {
             "n": len(rs),
             "mean_ratio": round(statistics.mean(rs), 4),
             "savings_pct": round((1 - statistics.mean(rs)) * 100, 1),
         }
+        for k, rs in sorted(grouped.items())
+    }
+
+
+def summarize(rows: list[dict]) -> dict:
+    """汇总：总体 + 分场景 + 分领域统计。"""
+    ratios = [r["ratio"] for r in rows]
+    total_orig = sum(r["orig_tokens"] for r in rows)
+    total_comp = sum(r["comp_tokens"] for r in rows)
 
     return {
         "n": len(rows),
@@ -76,7 +95,8 @@ def summarize(rows: list[dict]) -> dict:
         "total_savings_pct": round((1 - total_comp / total_orig) * 100, 1),
         "total_orig_tokens": total_orig,
         "total_comp_tokens": total_comp,
-        "by_domain": domain_stats,
+        "by_source": _group_stats(rows, "source"),
+        "by_domain": _group_stats(rows, "domain"),
     }
 
 
@@ -90,9 +110,12 @@ def _print_report(rows: list[dict], stats: dict) -> None:
         f"总体省 token：{stats['total_savings_pct']}% "
         f"（{stats['total_orig_tokens']} → {stats['total_comp_tokens']} token）"
     )
+    print("\n分场景：")
+    for s, d in stats["by_source"].items():
+        print(f"  {s:<30} {d['n']:>3} 条  省 {d['savings_pct']}%")
     print("\n分领域：")
     for d, s in stats["by_domain"].items():
-        print(f"  {d:<8} {s['n']:>3} 条  均值 {s['mean_ratio']}  省 {s['savings_pct']}%")
+        print(f"  {d:<8} {s['n']:>3} 条  省 {s['savings_pct']}%")
 
     # 能红断言（口径修正）：
     # ① 硬断言：总体压缩率 ≤0.75（整体省 ≥25%）。方案 §7 的「压缩率 ≤0.75」指整体。
@@ -125,7 +148,7 @@ def _print_report(rows: list[dict], stats: dict) -> None:
 
 
 def main(argv: list[str] | None = None) -> int:
-    items = load_golden()
+    items = load_all()
     rows = bench(items)
     stats = summarize(rows)
     _print_report(rows, stats)

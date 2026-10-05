@@ -15,24 +15,13 @@ import os
 import re
 import sys
 
+from .compress_bench import load_all
 from .token_counter import count_tokens
-
-GOLDEN_PATH = os.path.join(os.path.dirname(__file__), "datasets", "golden_zh.jsonl")
 
 # 英文标识符（代码/命令/API 名）：大小写敏感，逐字符保留。
 _EN_IDENT = re.compile(r"[A-Za-z][A-Za-z0-9_]*")
 # 数字 + 可选百分比（五铁律 3：数字绝不压缩）。
 _NUM = re.compile(r"\d+(?:\.\d+)?%?")
-
-
-def load_golden(path: str = GOLDEN_PATH) -> list[dict]:
-    items: list[dict] = []
-    with open(path, encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            if line:
-                items.append(json.loads(line))
-    return items
 
 
 def extract_payload(text: str) -> list[str]:
@@ -54,7 +43,7 @@ def bad_compressor(text: str) -> str:
 
 
 def main(argv: list[str] | None = None) -> int:
-    items = load_golden()
+    items = load_all()
     print(f"语义保真检查：golden 集 {len(items)} 条\n")
 
     total_missing = 0
