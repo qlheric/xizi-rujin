@@ -7,9 +7,9 @@
 | P0 | 立项与规格 | ✅ 完成 | 2026-10-06 | 目录结构就位；卖点/三档/五铁律定稿于 `00-S1-详细方案.md`；LICENSE(MIT) + README 骨架已建 |
 | P1 | 核心 SKILL.md | ✅ 完成 | 2026-10-06 | `SKILL.md` 正文就绪：frontmatter(触发词)+五铁律+三层压缩档+6 组示例；harness 亲验并入 P2 评测门 |
 | P2 | 评测门 | ✅ 完成 | 2026-10-06 | 50 条 golden：总体省 25.7%（1296→963 token）；语义保真 50/50；阴性对照坏压缩器被抓出；能红断言绿 |
-| P3 | 多 harness 适配 | ⏳ 安装完成 | 2026-10-06 | install.sh + 3 adapters README + hooks；SKILL.md 已装到 Claude Code + Codex（4776B 一致）；触发亲验待老大环境 |
+| P3 | 多 harness 适配 | ✅ 完成 | 2026-10-06 | Claude Code + Codex 亲验通过：`/xizi` 均正确触发压缩、语义/数字/payload 保留 |
 | P4 | README + 物料 | ✅ 完成 | 2026-10-06 | 完整 README（真实数字+诚实边界）+ logo（SVG 印章）+ 四套首发文案 |
-| P5 | 发布与复盘 | ⏳ 待老大 | — | GitHub 建仓（qlheric）+ 推送 + 中文社区发帖，需老大操作/授权 |
+| P5 | 发布与复盘 | ✅ 完成 | 2026-10-06 | 已 push 到 https://github.com/qlheric/xizi-rujin（main）；中文社区发帖待老大 |
 
 ---
 
