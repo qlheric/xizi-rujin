@@ -85,6 +85,9 @@ def summarize(rows: list[dict]) -> dict:
     ratios = [r["ratio"] for r in rows]
     total_orig = sum(r["orig_tokens"] for r in rows)
     total_comp = sum(r["comp_tokens"] for r in rows)
+    # 双轨：cl100k（GPT-3.5/4 口径）验证压缩率稳健
+    o_cl = sum(count_tokens(r["answer"], "cl100k_base") for r in rows)
+    c_cl = sum(count_tokens(r["compressed"], "cl100k_base") for r in rows)
 
     return {
         "n": len(rows),
@@ -93,6 +96,7 @@ def summarize(rows: list[dict]) -> dict:
         "min_ratio": round(min(ratios), 4),
         "max_ratio": round(max(ratios), 4),
         "total_savings_pct": round((1 - total_comp / total_orig) * 100, 1),
+        "total_savings_cl100k": round((1 - c_cl / o_cl) * 100, 1),
         "total_orig_tokens": total_orig,
         "total_comp_tokens": total_comp,
         "by_source": _group_stats(rows, "source"),
@@ -107,8 +111,8 @@ def _print_report(rows: list[dict], stats: dict) -> None:
         f"| 最小 {stats['min_ratio']} | 最大 {stats['max_ratio']}"
     )
     print(
-        f"总体省 token：{stats['total_savings_pct']}% "
-        f"（{stats['total_orig_tokens']} → {stats['total_comp_tokens']} token）"
+        f"总体省 token：{stats['total_savings_pct']}%（o200k） / "
+        f"{stats['total_savings_cl100k']}%（cl100k）"
     )
     print("\n分场景：")
     for s, d in stats["by_source"].items():

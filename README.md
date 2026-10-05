@@ -41,11 +41,12 @@
 
 | 指标 | 数字 |
 |---|---|
-| 总体省 token | **37.9%**（1936 → 1202 token） |
+| 总体省 token | **37.9%**（o200k） / 43.2%（cl100k）双轨 |
 | 分场景 | 冗余中文 **62.4%** / 精炼技术句 25.6% |
-| 语义保真 | 50/50 条 payload / 数字逐字符保留 |
+| 语义保真 | 63/63 条 payload / 数字逐字符保留 |
+| LLM-judge 整体语义 | 10/10 保留（judge=deepseek-chat） |
 | 端到端（真实 agent） | 9/10 保真（claude `/xizi` 压缩后 payload 不丢） |
-| 阴性对照 | 「乱删字坏压缩器」被抓出（缺 62 个 payload token） |
+| 阴性对照 | 「乱删字坏压缩器」被抓出（缺 76 个 payload token） |
 
 复现（Python 3.11+，用 uv）：
 
@@ -53,9 +54,10 @@
 uv sync                                  # 一键建环境（装 tiktoken）
 uv run python -m eval.compress_bench     # 压缩率 + 能红断言
 uv run python -m eval.semantic_eval      # 语义保真 + 阴性对照
+uv run python -m eval.judge_eval         # LLM-judge 整体语义（需 DEEPSEEK_API_KEY）
 ```
 
-**诚实说明**：压缩率因句子类型而异——冗余中文（模拟 agent 真实啰嗦输出）省 62.4%，术语 / 专名密集的精炼技术句只省 25.6%（英文 payload 必须原样保留）。端到端 9/10 的 1 个失败是「JavaScript 缩成 JS」这类专名缩写（真实 agent 也会犯），正是五铁律「专名不丢」要防的边界。数字是 golden 集实测，不是全场景天花板。
+**诚实说明**：①压缩率因句子类型而异——冗余中文（模拟 agent 真实啰嗦输出）省 62.4%，术语 / 专名密集的精炼技术句只省 25.6%（英文 payload 必须原样保留）。②tokenizer 口径影响绝对数字（o200k 37.9% / cl100k 43.2%），但「显著省 token」的结论稳健。③端到端 9/10 的 1 个失败是「JavaScript 缩成 JS」这类专名缩写（真实 agent 也会犯），正是五铁律「专名不丢」要防的边界。数字是 golden 集实测，不是全场景天花板。
 
 ---
 
