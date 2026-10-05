@@ -37,7 +37,13 @@
 | 语义保真 | 50/50 条 payload / 数字逐字符保留 |
 | 阴性对照 | 「乱删字坏压缩器」被抓出（缺 62 个 payload token） |
 
-复现：`python -m eval.compress_bench`（压缩率）· `python -m eval.semantic_eval`（保真）。
+复现（Python 3.11+，用 uv）：
+
+```bash
+uv sync                                  # 一键建环境（装 tiktoken）
+uv run python -m eval.compress_bench     # 压缩率 + 能红断言
+uv run python -m eval.semantic_eval      # 语义保真 + 阴性对照
+```
 
 **诚实说明**：压缩率因句子类型而异——冗余中文能省 35%+（见 `SKILL.md` 示例），术语 / 专名密集的技术短句只能省 20-25%（英文 payload 必须原样保留）。上表是 50 条 golden 集实测，不是全场景天花板。
 

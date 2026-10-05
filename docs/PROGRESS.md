@@ -30,3 +30,5 @@
 ## 环境事实
 
 - Python：uv 管理 CPython 3.12.13（3.14 无 tiktoken wheel）；`tiktoken==0.14.0` 已装可用。
+- 可复现：`uv sync` 一键建环境（tiktoken + xizi-rujin 可编辑安装）；`uv run python -m eval.compress_bench` / `semantic_eval` / `unittest discover` 三者均 exit=0（2026-10-06 亲验）。
+- git：本地 `main` 分支，首次 commit `901183d`，全部文件已提交；CI `.github/workflows/ci.yml` 就绪。
