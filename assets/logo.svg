@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#ffffff"/>
+  <!-- 印章主体（朱砂红） -->
+  <rect x="24" y="24" width="464" height="464" rx="36" fill="#C0392B"/>
+  <!-- 内边框（回纹感） -->
+  <rect x="50" y="50" width="412" height="412" rx="16" fill="none" stroke="#F1E0CC" stroke-width="6" opacity="0.75"/>
+  <!-- 字：惜字如金（2x2 布局，白文） -->
+  <text x="256" y="216" text-anchor="middle" font-family="'Noto Serif SC','Songti SC','SimSun','STSong',serif" font-size="152" font-weight="700" fill="#F8EFE2">惜字</text>
+  <text x="256" y="390" text-anchor="middle" font-family="'Noto Serif SC','Songti SC','SimSun','STSong',serif" font-size="152" font-weight="700" fill="#F8EFE2">如金</text>
+</svg>

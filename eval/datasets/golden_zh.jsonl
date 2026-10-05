@@ -1,0 +1,50 @@
+{"id": "react-001", "domain": "react", "answer": "这个组件在重新渲染，原因是每次渲染都创建了新的对象引用，导致 props 变化。", "compressed": "组件重渲染，因每渲染新对象引用，故 props 变。"}
+{"id": "react-002", "domain": "react", "answer": "useState 的更新是异步的，所以你不能在调用 setState 之后立即读取到最新的值。", "compressed": "useState 更新异步，故 setState 后不可立读新值。"}
+{"id": "react-003", "domain": "react", "answer": "useEffect 的依赖数组为空表示它只在组件挂载的时候执行一次，相当于生命周期函数。", "compressed": "useEffect 依赖数组空，则仅挂载时执行一次，同生命周期函数。"}
+{"id": "react-004", "domain": "react", "answer": "在列表渲染的时候，每个元素都需要一个唯一的 key，这样 React 才能正确地复用和更新 DOM。", "compressed": "列表渲染，每元素需唯一 key，React 方能正确复用更新 DOM。"}
+{"id": "react-005", "domain": "react", "answer": "受控组件的值由 React 的 state 控制，非受控组件的值由 DOM 自己管理。", "compressed": "受控组件值由 React state 控，非受控由 DOM 自管。"}
+{"id": "react-006", "domain": "react", "answer": "Context 可以让数据跨层级传递，避免一层一层手动传 props，也就是 prop drilling。", "compressed": "Context 跨层传数据，免逐层传 props（prop drilling）。"}
+{"id": "react-007", "domain": "react", "answer": "用 memo 包裹组件之后，只有在 props 发生变化时才会重新渲染，否则直接复用上次的结果。", "compressed": "memo 包组件，仅 props 变时重渲染，否则复用旧果。"}
+{"id": "react-008", "domain": "react", "answer": "闭包陷阱是指回调函数里捕获的是旧的值，导致读取到过期的 state。", "compressed": "闭包陷阱：回调捕获旧值，故读到过期 state。"}
+{"id": "react-009", "domain": "react", "answer": "事件冒泡是指事件会从触发元素一直向上传播到祖先元素，可以用 stopPropagation 阻止。", "compressed": "事件冒泡：事件自触发元素上传祖先，可用 stopPropagation 止。"}
+{"id": "react-010", "domain": "react", "answer": "虚拟 DOM 是真实 DOM 的轻量 JavaScript 对象表示，React 通过对比新旧虚拟 DOM 来最小化真实 DOM 操作。", "compressed": "虚拟 DOM 乃真实 DOM 轻量 JavaScript 对象，React 比对新旧以最小化真实 DOM 操作。"}
+{"id": "react-011", "domain": "react", "answer": "useEffect 可以返回一个清理函数，它在组件卸载或者依赖变化之前执行，用来清理定时器和订阅。", "compressed": "useEffect 可返清理函数，卸载或依赖变前执行，清定时器订阅。"}
+{"id": "react-012", "domain": "react", "answer": "React 18 的并发特性让渲染可以中断和恢复，从而让高优先级的更新可以优先处理。", "compressed": "React 18 并发：渲染可中断恢复，高优先更新先处理。"}
+{"id": "python-001", "domain": "python", "answer": "Python 的字典在 3.7 版本之后保证了插入顺序，所以你可以依赖它的顺序来遍历。", "compressed": "Python 字典自 3.7 起保插入序，可依序遍历。"}
+{"id": "python-002", "domain": "python", "answer": "列表推导式可以用一行代码生成一个新的列表，比循环加 append 更简洁也更快。", "compressed": "列表推导式一行生成新列表，较循环加 append 更简更快。"}
+{"id": "python-003", "domain": "python", "answer": "生成器是惰性求值的，它不会一次性把所有的值都算出来，而是在需要的时候才产出下一个。", "compressed": "生成器惰性求值，不一次性算全，需要时才产下一个。"}
+{"id": "python-004", "domain": "python", "answer": "GIL 是全局解释器锁，它导致 CPython 的多线程在 CPU 密集任务上无法真正并行。", "compressed": "GIL 全局解释器锁，致 CPython 多线程 CPU 密集任务难真并行。"}
+{"id": "python-005", "domain": "python", "answer": "装饰器是一个接收函数并返回新函数的高阶函数，用来在不修改原函数的情况下扩展功能。", "compressed": "装饰器：接收函数返回新函数的高阶函数，不改原函数而扩功能。"}
+{"id": "python-006", "domain": "python", "answer": "with 语句配合上下文管理器，可以自动管理资源的获取和释放，比如文件的打开和关闭。", "compressed": "with 配上下文管理器，自动管资源获取释放，如文件开关。"}
+{"id": "python-007", "domain": "python", "answer": "函数的默认参数如果是可变对象，比如列表，那么它会在多次调用之间共享，这是一个常见的坑。", "compressed": "默认参数若可变对象（如列表），则多次调用间共享，常见坑。"}
+{"id": "python-008", "domain": "python", "answer": "浅拷贝只复制最外层的对象，深拷贝会递归复制所有嵌套的对象。", "compressed": "浅拷贝仅复制外层，深拷贝递归复制全嵌套。"}
+{"id": "python-009", "domain": "python", "answer": "try 和 except 用来捕获异常，finally 里的代码无论是否发生异常都会执行。", "compressed": "try/except 捕获异常，finally 无论异常与否皆执行。"}
+{"id": "python-010", "domain": "python", "answer": "虚拟环境可以为每个项目隔离依赖，避免不同项目之间的包版本互相冲突。", "compressed": "虚拟环境隔离各项目依赖，免包版本互冲突。"}
+{"id": "python-011", "domain": "python", "answer": "类型注解是给变量和函数标注类型，它不影响运行，但可以让 IDE 和静态检查工具发现错误。", "compressed": "类型注解标注变量函数类型，不碍运行，助 IDE 与静态检查找错。"}
+{"id": "python-012", "domain": "python", "answer": "f-string 可以在字符串里直接嵌入表达式，比用百分号或者 format 方法更直观。", "compressed": "f-string 字符串内嵌表达式，较百分号或 format 直观。"}
+{"id": "sql-001", "domain": "sql", "answer": "索引可以加速查询，因为它让数据库不必扫描全表，而是可以直接定位到数据。", "compressed": "索引加速查询：免全表扫描，直接定位数据。"}
+{"id": "sql-002", "domain": "sql", "answer": "INNER JOIN 只返回两个表都匹配的行，LEFT JOIN 会保留左表的所有行。", "compressed": "INNER JOIN 仅返两表匹配行，LEFT JOIN 保留左表全行。"}
+{"id": "sql-003", "domain": "sql", "answer": "事务具有 ACID 特性，也就是原子性、一致性、隔离性和持久性。", "compressed": "事务具 ACID：原子、一致、隔离、持久。"}
+{"id": "sql-004", "domain": "sql", "answer": "主键是唯一的并且不能为空，唯一键也是唯一的但是可以有空值。", "compressed": "主键唯一且非空，唯一键亦唯一但可空。"}
+{"id": "sql-005", "domain": "sql", "answer": "GROUP BY 用来分组，HAVING 用来对分组之后的结果做过滤，WHERE 在分组之前过滤。", "compressed": "GROUP BY 分组，HAVING 滤分组后结果，WHERE 分组前滤。"}
+{"id": "sql-006", "domain": "sql", "answer": "慢查询优化通常是先看执行计划，找到全表扫描或者索引失效的地方，再加索引或者改写 SQL。", "compressed": "慢查询优化：先看执行计划，找全表扫描或索引失效，再加索引或改 SQL。"}
+{"id": "sql-007", "domain": "sql", "answer": "LIMIT 和 OFFSET 用来分页，但是数据量大时 OFFSET 很深会越来越慢。", "compressed": "LIMIT/OFFSET 分页，但数据大时深 OFFSET 愈慢。"}
+{"id": "sql-008", "domain": "sql", "answer": "在索引列上使用函数或者做类型转换，会导致索引失效，从而退化成全表扫描。", "compressed": "索引列用函数或类型转换，致索引失效，退化全表扫描。"}
+{"id": "sql-009", "domain": "sql", "answer": "外键约束用来保证引用完整性，防止出现指向不存在记录的数据。", "compressed": "外键约束保引用完整，防指向不存在记录。"}
+{"id": "sql-010", "domain": "sql", "answer": "COUNT 统计行数，SUM 求和，它们常常和 GROUP BY 一起使用来做聚合统计。", "compressed": "COUNT 计数，SUM 求和，常与 GROUP BY 并用聚合统计。"}
+{"id": "sql-011", "domain": "sql", "answer": "数据库范式是为了减少数据冗余和更新异常，常见的有第一、第二和第三范式。", "compressed": "数据库范式减冗余与更新异常，常见第一二三范式。"}
+{"id": "sql-012", "domain": "sql", "answer": "死锁是两个事务互相等待对方持有的锁，谁都不肯释放，最终都卡住。", "compressed": "死锁：两事务互等对方锁，皆不释放，终双卡。"}
+{"id": "astock-001", "domain": "astock", "answer": "割肉是指股价下跌后，为了避免继续亏损，忍痛把股票卖出。", "compressed": "割肉：股价跌后，为避续亏，忍痛卖出。"}
+{"id": "astock-002", "domain": "astock", "answer": "抄底是指投资者在股价处于低位的时候买入，期望之后能够反弹上涨。", "compressed": "抄底：股价低位时买入，期望反弹上涨。"}
+{"id": "astock-003", "domain": "astock", "answer": "踏空是指股价上涨了，但是投资者没有及时买入，错过了这波行情。", "compressed": "踏空：股价涨而未及买入，错过行情。"}
+{"id": "astock-004", "domain": "astock", "answer": "套牢是指买入之后股价下跌，如果卖出就会亏损，只能继续持有等待解套。", "compressed": "套牢：买入后跌，卖出即亏，只能持有等解套。"}
+{"id": "astock-005", "domain": "astock", "answer": "A 股主板股票的涨跌幅限制是百分之十，创业板和科创板是百分之二十。", "compressed": "A 股主板涨跌幅限 10%，创业板科创板 20%。"}
+{"id": "astock-006", "domain": "astock", "answer": "量比是当前每分钟成交量与过去五日平均每分钟成交量的比值，用来衡量放量程度。", "compressed": "量比：现每分钟量比过去五日均值，衡量放量。"}
+{"id": "astock-007", "domain": "astock", "answer": "龙虎榜是交易所公布的当日异动股票的买卖席位数据，用来观察主力资金动向。", "compressed": "龙虎榜：交易所公布当日异动股买卖席位，观察主力动向。"}
+{"id": "astock-008", "domain": "astock", "answer": "均线金叉是短期均线上穿长期均线，通常被视为买入信号，死叉则相反。", "compressed": "金叉：短均线上穿长均线，视为买信号；死叉反之。"}
+{"id": "astock-009", "domain": "astock", "answer": "A 股实行 T+1 交易制度，也就是当天买入的股票，最早要到下一个交易日才能卖出。", "compressed": "A 股 T+1：当日买入，最早次交易日方可卖出。"}
+{"id": "astock-010", "domain": "astock", "answer": "除权除息是公司分红送股之后，对股价做相应下调，让总市值保持不变。", "compressed": "除权除息：分红送股后股价相应下调，保总市值不变。"}
+{"id": "astock-011", "domain": "astock", "answer": "市盈率是股价除以每股收益，用来衡量一只股票的估值高低。", "compressed": "市盈率：股价除以每股收益，衡量估值高低。"}
+{"id": "astock-012", "domain": "astock", "answer": "仓位管理就是控制投入资金的比例，不满仓可以保留加仓或者应对风险的空间。", "compressed": "仓位管理：控制投入资金比例，不满仓保留加仓应对风险空间。"}
+{"id": "general-001", "domain": "general", "answer": "缓存是把计算结果或者数据临时存起来，下次用到的时候直接读取，不用重新计算或者重新请求。", "compressed": "缓存：结果数据临时存，下次直读，免重算重请求。"}
+{"id": "general-002", "domain": "general", "answer": "幂等是指同一个操作执行一次和执行多次，产生的结果是一样的。", "compressed": "幂等：同操作执行一次多次，结果一致。"}

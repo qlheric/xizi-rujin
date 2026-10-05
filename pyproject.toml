@@ -1,0 +1,13 @@
+[project]
+name = "xizi-rujin"
+version = "0.1.0"
+description = "惜字如金 —— 中文版省 token meme skill（评测门）"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "tiktoken>=0.14.0",
+]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
