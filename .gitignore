@@ -10,3 +10,6 @@ venv/
 Thumbs.db
 .idea/
 .vscode/
+
+# DSH harness 内部记录（非项目内容）
+review-receipts/
