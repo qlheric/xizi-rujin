@@ -26,6 +26,7 @@
 - 2026-10-06：补强 ⑦（长尾拓展，老大拍「继续完善」）——词典扩到 23 领域（新增法律/健身/摄影/宠物/汽车/母婴/房产/数码/体育/美妆），600+ 词条；29 单测全绿 + CLI 二十三路冒烟通过。
 - 2026-10-06：放大器（老大拍「先做放大器」）——写技术深度文 `docs/article.md`（方法学 + 诚实 benchmark + 23 领域），供知乎/掘金发布。
 - 2026-10-06：放大器（续）——调研 awesome 收录目标（4 个列表 + GitHub topics），清单落 `docs/awesome-submission.md`；提交 PR 待 qlheric 账号。
+- 2026-10-06：放大器执行 —— 发帖 X + 掘金（即刻/V2EX 有注册门槛，暂缓）；awesome PR 提交 2 个（travisvn/awesome-claude-skills 表格行 + VoltAgent/awesome-agent-skills 的 Context Engineering 区），待 maintainer review。
 
 ## P2 评测数字（真实实测，2026-10-06）
 
