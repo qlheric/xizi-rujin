@@ -4,6 +4,6 @@
 新增领域 = 新增一个文件 + 在 compressor 的 RULES_BY_LEVEL 里挂上，不改核心逻辑。
 """
 
-from . import astock, wenyan
+from . import astock, cyber, gaming, gongwen, internet, medical, wenyan
 
-__all__ = ["wenyan", "astock"]
+__all__ = ["wenyan", "astock", "internet", "gongwen", "cyber", "gaming", "medical"]

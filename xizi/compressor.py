@@ -9,6 +9,11 @@ from __future__ import annotations
 import re
 
 from .glossary.astock import ASTOCK
+from .glossary.cyber import CYBER
+from .glossary.gaming import GAMING
+from .glossary.gongwen import GONGWEN
+from .glossary.internet import INTERNET
+from .glossary.medical import MEDICAL
 from .glossary.wenyan import WENYAN, XIZI
 
 # payload 保护：反引号代码 / 英文标识符 / 数字百分比 —— 逐字符保留（五铁律 4）
@@ -17,11 +22,17 @@ _PAYLOAD = re.compile(r"`[^`]+`|[A-Za-z_][A-Za-z0-9_]*|\d+(?:\.\d+)?%?")
 
 _PLACEHOLDER = "\uE000{}\uE001"
 
-# 三层压缩档 → 词典（对应 SKILL.md 的 /wenyan /xizi /heihua）
+# 压缩档 → 词典（/wenyan /xizi 通用档 + 各领域黑话档）
 RULES_BY_LEVEL: dict[str, dict[str, str]] = {
     "wenyan": WENYAN,
     "xizi": XIZI,
-    "heihua": ASTOCK,
+    "heihua": ASTOCK,  # 兼容：heihua = A股黑话（SKILL.md 三档之一）
+    "astock": ASTOCK,
+    "internet": INTERNET,
+    "gongwen": GONGWEN,
+    "cyber": CYBER,
+    "gaming": GAMING,
+    "medical": MEDICAL,
 }
 
 
@@ -46,7 +57,10 @@ def _restore(text: str, frags: list[str]) -> str:
 def compress(text: str, level: str = "xizi") -> str:
     """确定性压缩。level ∈ {wenyan, xizi, heihua}。"""
     if level not in RULES_BY_LEVEL:
-        raise ValueError(f"未知压缩档：{level}（可选 wenyan / xizi / heihua）")
+        raise ValueError(
+            f"未知压缩档：{level}（可选 wenyan / xizi / heihua / astock / "
+            f"internet / gongwen / cyber / gaming / medical）"
+        )
     rules = RULES_BY_LEVEL[level]
     protected, frags = _protect(text)
     # 长词优先，避免短词先替换破坏长词

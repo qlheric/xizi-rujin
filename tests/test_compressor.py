@@ -38,6 +38,30 @@ class TestCompressor(unittest.TestCase):
         out = compress("在股价低位时买入", "heihua")
         self.assertEqual(out, "抄底")
 
+    def test_astock_expanded(self) -> None:
+        """A股估值缩写：市盈率 → PE。"""
+        self.assertEqual(compress("市盈率", "astock"), "PE")
+
+    def test_internet_abbr(self) -> None:
+        """互联网缩写：关键绩效指标 → KPI。"""
+        self.assertEqual(compress("关键绩效指标", "internet"), "KPI")
+
+    def test_gongwen_compression(self) -> None:
+        """公文套话压缩：深入贯彻落实 → 落实。"""
+        self.assertEqual(compress("深入贯彻落实", "gongwen"), "落实")
+
+    def test_cyber_slang(self) -> None:
+        """网络梗：永远的神 → yyds。"""
+        self.assertEqual(compress("永远的神", "cyber"), "yyds")
+
+    def test_gaming_terms(self) -> None:
+        """电竞术语：远程物理输出核心 → ADC。"""
+        self.assertEqual(compress("远程物理输出核心", "gaming"), "ADC")
+
+    def test_medical_abbr(self) -> None:
+        """医疗缩写：急性心肌梗死 → 心梗。"""
+        self.assertEqual(compress("急性心肌梗死", "medical"), "心梗")
+
     def test_unknown_level_raises(self) -> None:
         with self.assertRaises(ValueError):
             compress("文本", "unknown")

@@ -82,7 +82,30 @@ python -m xizi.cli heihua "在股价低位时买入"
 # 抄底
 ```
 
-三层档：`wenyan`（单字）/ `xizi`（单字 + 短语）/ `heihua`（A 股黑话）。可插拔词典：`xizi/glossary/` 下每个文件是一个领域词典，加新领域（医疗 / 法律 / 体制内）只需加一个文件、不改核心逻辑。
+三层档：`wenyan`（单字）/ `xizi`（单字 + 短语）/ `heihua`（A 股黑话）。
+
+**方式三：领域黑话档**（白话 → 领域高密度术语，中文独有、英文无法复刻）：
+
+```bash
+python -m xizi.cli astock "市盈率"          # PE
+python -m xizi.cli internet "关键绩效指标"   # KPI
+python -m xizi.cli gongwen "深入贯彻落实"    # 落实
+python -m xizi.cli cyber "永远的神"          # yyds
+python -m xizi.cli gaming "远程物理输出核心"  # ADC
+python -m xizi.cli medical "急性心肌梗死"     # 心梗
+```
+
+| 档 | 领域 | 示例 |
+|---|---|---|
+| `wenyan` / `xizi` | 通用文言 / 成语 | 因为→因 / 现在→今 |
+| `astock` / `heihua` | A股金融黑话 | 市盈率→PE / 止损卖出→割肉 |
+| `internet` | 互联网大厂黑话 | 关键绩效指标→KPI |
+| `gongwen` | 体制内公文 | 深入贯彻落实→落实 |
+| `cyber` | 网络流行语 | 永远的神→yyds |
+| `gaming` | 游戏电竞 | 远程物理输出核心→ADC |
+| `medical` | 医疗术语 | 急性心肌梗死→心梗 |
+
+可插拔词典：`xizi/glossary/` 下每个文件是一个领域词典，共 200+ 词条；加新领域（法律 / 学术 / 粤语…）只需加一个文件、不改核心逻辑。
 
 ---
 

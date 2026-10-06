@@ -9,9 +9,9 @@ from __future__ import annotations
 
 import sys
 
-from .compressor import compress
+from .compressor import RULES_BY_LEVEL, compress
 
-_LEVELS = {"wenyan", "xizi", "heihua"}
+_LEVELS = set(RULES_BY_LEVEL)
 
 
 def main(argv: list[str] | None = None) -> int:
