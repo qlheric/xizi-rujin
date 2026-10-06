@@ -11,6 +11,7 @@ import json
 import os
 import re
 import sys
+import time
 import urllib.request
 
 from .assertions import run_assertions
@@ -54,9 +55,16 @@ def run_agent(engine: str, question: str) -> str:
         url, data=data,
         headers={"Authorization": "Bearer " + key, "Content-Type": "application/json"},
     )
-    with urllib.request.urlopen(req, timeout=120) as r:
-        resp = json.loads(r.read())
-    return resp["choices"][0]["message"]["content"].strip()
+    last: Exception | None = None
+    for _ in range(3):  # 重试 3 次，抗网络波动（RemoteDisconnected/URLError）
+        try:
+            with urllib.request.urlopen(req, timeout=120) as r:
+                resp = json.loads(r.read())
+            return resp["choices"][0]["message"]["content"].strip()
+        except Exception as exc:  # noqa: BLE001
+            last = exc
+            time.sleep(2)
+    raise last  # type: ignore[misc]
 
 
 def mock_good(entry: dict) -> str:

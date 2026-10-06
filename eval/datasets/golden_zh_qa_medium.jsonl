@@ -1,0 +1,50 @@
+{"id": "qa-m001", "domain": "tech", "difficulty": "medium", "question": "TCP 三次握手为什么是三次而不是两次？", "golden": "三次才能确认双方的收发能力都正常", "keys": ["三次"]}
+{"id": "qa-m002", "domain": "tech", "difficulty": "medium", "question": "什么是幂等操作？", "golden": "同一个操作执行一次和多次结果一致", "keys": ["幂等", "一致"]}
+{"id": "qa-m003", "domain": "tech", "difficulty": "medium", "question": "HTTP 和 HTTPS 的主要区别是什么？", "golden": "HTTPS 用 TLS/SSL 加密传输", "keys": ["加密"]}
+{"id": "qa-m004", "domain": "tech", "difficulty": "medium", "question": "数据库事务的 ACID 特性分别指什么？", "golden": "原子性、一致性、隔离性、持久性", "keys": ["ACID", "原子"]}
+{"id": "qa-m005", "domain": "tech", "difficulty": "medium", "question": "什么是死锁？", "golden": "两个事务互相等待对方释放锁导致都无法继续", "keys": ["死锁", "等待"]}
+{"id": "qa-m006", "domain": "tech", "difficulty": "medium", "question": "数据库索引为什么能加速查询？", "golden": "避免全表扫描，直接定位数据", "keys": ["索引", "全表扫描"]}
+{"id": "qa-m007", "domain": "tech", "difficulty": "medium", "question": "进程和线程的主要区别是什么？", "golden": "进程拥有独立资源，线程共享进程资源", "keys": ["进程", "线程"]}
+{"id": "qa-m008", "domain": "tech", "difficulty": "medium", "question": "什么是缓存穿透？", "golden": "查询不存在的数据，请求绕过缓存直达数据库", "keys": ["缓存穿透"]}
+{"id": "qa-m009", "domain": "tech", "difficulty": "medium", "question": "冒泡排序的时间复杂度是多少？", "golden": "O(n²)", "keys": ["n2"]}
+{"id": "qa-m010", "domain": "tech", "difficulty": "medium", "question": "CAP 定理说的是什么？", "golden": "一致性、可用性、分区容错性最多同时满足两个", "keys": ["CAP"]}
+{"id": "qa-m011", "domain": "astock", "difficulty": "medium", "question": "为什么 A股散户容易亏钱？", "golden": "追涨杀跌、频繁交易导致成本高", "keys": ["追涨杀跌"]}
+{"id": "qa-m012", "domain": "astock", "difficulty": "medium", "question": "市盈率高低说明什么？", "golden": "高市盈率通常意味着市场给的估值高", "keys": ["市盈率"]}
+{"id": "qa-m013", "domain": "astock", "difficulty": "medium", "question": "现金分红后股价会怎么变化？", "golden": "除息日股价相应下调", "keys": ["除息", "下调"]}
+{"id": "qa-m014", "domain": "astock", "difficulty": "medium", "question": "什么是量化交易？", "golden": "用程序和算法自动执行交易决策", "keys": ["量化", "算法"]}
+{"id": "qa-m015", "domain": "astock", "difficulty": "medium", "question": "设置止损的核心意义是什么？", "golden": "把单笔亏损控制在预设范围内", "keys": ["止损", "控制"]}
+{"id": "qa-m016", "domain": "astock", "difficulty": "medium", "question": "技术分析和基本面分析的区别？", "golden": "技术分析看价格与成交量，基本面分析看财务与经营", "keys": ["技术", "基本面"]}
+{"id": "qa-m017", "domain": "astock", "difficulty": "medium", "question": "什么是市场情绪周期？", "golden": "市场情绪从冰点到高潮再到退潮的循环", "keys": ["情绪"]}
+{"id": "qa-m018", "domain": "astock", "difficulty": "medium", "question": "为什么说别人恐惧我贪婪？", "golden": "市场恐慌时股价被压低，反而是买入机会", "keys": ["恐惧", "贪婪"]}
+{"id": "qa-m019", "domain": "economy", "difficulty": "medium", "question": "通货膨胀对储蓄有什么影响？", "golden": "货币实际购买力下降", "keys": ["通货膨胀", "购买力"]}
+{"id": "qa-m020", "domain": "economy", "difficulty": "medium", "question": "什么是机会成本？", "golden": "为做一件事而放弃的次优选择的收益", "keys": ["机会成本"]}
+{"id": "qa-m021", "domain": "economy", "difficulty": "medium", "question": "供需关系如何影响价格？", "golden": "供大于求价格下跌，供不应求价格上涨", "keys": ["供给", "需求"]}
+{"id": "qa-m022", "domain": "economy", "difficulty": "medium", "question": "GDP 衡量的是什么？", "golden": "一个国家或地区生产的最终产品和服务的总价值", "keys": ["GDP"]}
+{"id": "qa-m023", "domain": "economy", "difficulty": "medium", "question": "什么是复利？", "golden": "利息计入本金继续生息", "keys": ["复利"]}
+{"id": "qa-m024", "domain": "economy", "difficulty": "medium", "question": "本币贬值对出口有什么影响？", "golden": "出口商品在国际市场更有价格竞争力", "keys": ["贬值", "出口"]}
+{"id": "qa-m025", "domain": "economy", "difficulty": "medium", "question": "什么是边际效用递减？", "golden": "每多消费一单位，新增的满足感递减", "keys": ["边际"]}
+{"id": "qa-m026", "domain": "economy", "difficulty": "medium", "question": "经济周期的四个阶段是什么？", "golden": "繁荣、衰退、萧条、复苏", "keys": ["繁荣", "衰退", "萧条", "复苏"]}
+{"id": "qa-m027", "domain": "law", "difficulty": "medium", "question": "合同违约通常要承担什么责任？", "golden": "继续履行、赔偿损失或支付违约金", "keys": ["违约", "赔偿"]}
+{"id": "qa-m028", "domain": "law", "difficulty": "medium", "question": "什么是正当防卫？", "golden": "对正在进行的不法侵害采取的防卫行为", "keys": ["正当防卫"]}
+{"id": "qa-m029", "domain": "law", "difficulty": "medium", "question": "劳动仲裁的申请时效是多长？", "golden": "一年", "keys": ["一年"]}
+{"id": "qa-m030", "domain": "law", "difficulty": "medium", "question": "什么是知识产权？", "golden": "对智力劳动成果依法享有的权利", "keys": ["知识产权"]}
+{"id": "qa-m031", "domain": "law", "difficulty": "medium", "question": "民事诉讼中谁主张谁举证是什么意思？", "golden": "提出事实主张的一方负责提供证据", "keys": ["举证"]}
+{"id": "qa-m032", "domain": "law", "difficulty": "medium", "question": "行政处罚和刑事处罚的主要区别？", "golden": "行政处罚由行政机关作出，刑事处罚由法院判决", "keys": ["行政", "刑事"]}
+{"id": "qa-m033", "domain": "idiom", "difficulty": "medium", "question": "成语画蛇添足比喻什么？", "golden": "做多余的事反而弄巧成拙", "keys": ["多此一举"]}
+{"id": "qa-m034", "domain": "idiom", "difficulty": "medium", "question": "成语亡羊补牢的寓意是什么？", "golden": "出了问题及时补救还不算晚", "keys": ["补救"]}
+{"id": "qa-m035", "domain": "idiom", "difficulty": "medium", "question": "成语掩耳盗铃讽刺什么？", "golden": "自欺欺人", "keys": ["自欺欺人"]}
+{"id": "qa-m036", "domain": "idiom", "difficulty": "medium", "question": "成语守株待兔告诫人们什么？", "golden": "不能心存侥幸、不劳而获", "keys": ["不劳而获"]}
+{"id": "qa-m037", "domain": "idiom", "difficulty": "medium", "question": "成语滥竽充数指什么？", "golden": "没有真才实学混在行家里面充数", "keys": ["滥竽充数"]}
+{"id": "qa-m038", "domain": "idiom", "difficulty": "medium", "question": "成语破釜沉舟形容什么决心？", "golden": "断绝退路、一往无前的决心", "keys": ["破釜沉舟", "退路"]}
+{"id": "qa-m039", "domain": "science", "difficulty": "medium", "question": "为什么晴朗的天空是蓝色的？", "golden": "大气对蓝光散射更强", "keys": ["散射"]}
+{"id": "qa-m040", "domain": "science", "difficulty": "medium", "question": "温室效应的主要原因是什么？", "golden": "温室气体排放增多吸收地面热量", "keys": ["温室气体"]}
+{"id": "qa-m041", "domain": "science", "difficulty": "medium", "question": "什么是光合作用？", "golden": "植物利用光能把二氧化碳和水合成有机物", "keys": ["光合作用"]}
+{"id": "qa-m042", "domain": "science", "difficulty": "medium", "question": "为什么先看到闪电后听到雷声？", "golden": "光速远快于声速", "keys": ["光速"]}
+{"id": "qa-m043", "domain": "science", "difficulty": "medium", "question": "什么是基因突变？", "golden": "DNA 序列发生改变", "keys": ["基因", "DNA"]}
+{"id": "qa-m044", "domain": "science", "difficulty": "medium", "question": "铁为什么会生锈？", "golden": "铁与氧气和水发生氧化反应", "keys": ["氧化"]}
+{"id": "qa-m045", "domain": "history", "difficulty": "medium", "question": "科举制度的主要影响是什么？", "golden": "通过考试选拔人才，打破门第限制", "keys": ["科举"]}
+{"id": "qa-m046", "domain": "history", "difficulty": "medium", "question": "丝绸之路的主要作用是什么？", "golden": "促进中西贸易与文化交流", "keys": ["丝绸之路"]}
+{"id": "qa-m047", "domain": "history", "difficulty": "medium", "question": "为什么说唐朝是一个开放的朝代？", "golden": "中外交流频繁、兼容并蓄", "keys": ["唐朝"]}
+{"id": "qa-m048", "domain": "history", "difficulty": "medium", "question": "洋务运动的口号是什么？", "golden": "自强、求富", "keys": ["自强"]}
+{"id": "qa-m049", "domain": "history", "difficulty": "medium", "question": "辛亥革命最重要的历史意义是什么？", "golden": "推翻封建帝制", "keys": ["辛亥革命", "帝制"]}
+{"id": "qa-m050", "domain": "history", "difficulty": "medium", "question": "中国改革开放的起点是哪个会议？", "golden": "1978年十一届三中全会", "keys": ["1978"]}

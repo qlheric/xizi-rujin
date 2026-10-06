@@ -7,6 +7,18 @@ S: 必须逐条公开失败案例（问题+agent答案+golden答案+缺失项）
 from __future__ import annotations
 
 
+def _group_pass(entries: list[dict], results: list[tuple], key: str) -> dict:
+    """按 key（difficulty/domain）分组统计通过数/总数。"""
+    grouped: dict[str, list[int]] = {}
+    for entry, _ans, passed, _missing in results:
+        k = entry.get(key, "easy" if key == "difficulty" else "?")
+        grouped.setdefault(k, [0, 0])
+        grouped[k][0] += 1
+        if passed:
+            grouped[k][1] += 1
+    return grouped
+
+
 def report(entries: list[dict], results: list[tuple]) -> None:
     """输出公开失败分析。
 
@@ -17,6 +29,11 @@ def report(entries: list[dict], results: list[tuple]) -> None:
     passed_n = total - len(fails)
 
     print(f"\n通过率：{passed_n}/{total}（{passed_n / total:.0%}）——诚实口径，非广告数字")
+
+    for label, key in (("难度", "difficulty"), ("领域", "domain")):
+        grouped = _group_pass(entries, results, key)
+        parts = [f"{k} {p}/{n}" for k, (n, p) in sorted(grouped.items())]
+        print(f"按{label}：{'  '.join(parts)}")
 
     if not fails:
         print("无失败案例。")

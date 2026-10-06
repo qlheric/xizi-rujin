@@ -1,0 +1,50 @@
+{"id": "qa-h001", "domain": "gongwu", "difficulty": "hard", "question": "鸡兔同笼，共 35 个头、94 只脚，鸡和兔各几只？", "golden": "鸡 23 只，兔 12 只", "keys": ["23", "12"]}
+{"id": "qa-h002", "domain": "gongwu", "difficulty": "hard", "question": "一项工作甲单独做要 6 天，乙单独做要 3 天，两人合作需要几天？", "golden": "2 天", "keys": ["2"]}
+{"id": "qa-h003", "domain": "gongwu", "difficulty": "hard", "question": "本金 10000 元，年利率 5%，按复利存 2 年，本息合计多少元？", "golden": "11025 元", "keys": ["11025"]}
+{"id": "qa-h004", "domain": "gongwu", "difficulty": "hard", "question": "一个数加上 5，乘以 2，再减去 4 等于 18，这个数是多少？", "golden": "6", "keys": ["6"]}
+{"id": "qa-h005", "domain": "gongwu", "difficulty": "hard", "question": "一列火车长 300 米，通过一座 500 米的桥用了 40 秒，火车速度是多少米每秒？", "golden": "20 米每秒", "keys": ["20"]}
+{"id": "qa-h006", "domain": "gongwu", "difficulty": "hard", "question": "一件商品原价 200 元，先打 8 折再打 9 折，最终售价多少元？", "golden": "144 元", "keys": ["144"]}
+{"id": "qa-h007", "domain": "gongwu", "difficulty": "hard", "question": "100 克浓度为 20% 的盐水，加入多少克水后浓度变为 10%？", "golden": "加入 100 克水", "keys": ["100"]}
+{"id": "qa-h008", "domain": "gongwu", "difficulty": "hard", "question": "爸爸比儿子大 30 岁，5 年后爸爸年龄是儿子的 3 倍，儿子现在几岁？", "golden": "10 岁", "keys": ["10"]}
+{"id": "qa-h009", "domain": "gongwu", "difficulty": "hard", "question": "甲乙两地相距 100 公里，两车相向而行，甲车 20 公里每小时、乙车 30 公里每小时，多久相遇？", "golden": "2 小时", "keys": ["2"]}
+{"id": "qa-h010", "domain": "gongwu", "difficulty": "hard", "question": "一项工程甲单独做要 10 天，乙单独做要 15 天，合作需要几天？", "golden": "6 天", "keys": ["6"]}
+{"id": "qa-h011", "domain": "gongwu", "difficulty": "hard", "question": "商品进价 100 元，售价 120 元，利润率是多少？", "golden": "20%", "keys": ["20"]}
+{"id": "qa-h012", "domain": "gongwu", "difficulty": "hard", "question": "数列 2、4、8、16 的下一个数是多少？", "golden": "32", "keys": ["32"]}
+{"id": "qa-h013", "domain": "tech", "difficulty": "hard", "question": "在含 1000 个元素的有序数组中做二分查找，最多需要比较多少次？", "golden": "10 次", "keys": ["10"]}
+{"id": "qa-h014", "domain": "tech", "difficulty": "hard", "question": "快速排序的最坏时间复杂度是多少？", "golden": "O(n²)", "keys": ["n2"]}
+{"id": "qa-h015", "domain": "tech", "difficulty": "hard", "question": "哈希表查找的平均时间复杂度是多少？", "golden": "O(1)", "keys": ["1"]}
+{"id": "qa-h016", "domain": "tech", "difficulty": "hard", "question": "一棵有 n 个节点的树有多少条边？", "golden": "n-1 条边", "keys": ["n-1"]}
+{"id": "qa-h017", "domain": "tech", "difficulty": "hard", "question": "完全二叉树第 k 层最多有多少个节点？", "golden": "2^(k-1) 个", "keys": ["2"]}
+{"id": "qa-h018", "domain": "tech", "difficulty": "hard", "question": "一个字节可以表示多少个不同的值？", "golden": "256 个", "keys": ["256"]}
+{"id": "qa-h019", "domain": "tech", "difficulty": "hard", "question": "32 位系统理论最大可寻址内存是多少？", "golden": "4GB", "keys": ["4"]}
+{"id": "qa-h020", "domain": "tech", "difficulty": "hard", "question": "TCP 端口号的取值范围是什么？", "golden": "0 到 65535", "keys": ["65535"]}
+{"id": "qa-h021", "domain": "tech", "difficulty": "hard", "question": "IPv4 地址由多少位二进制组成？", "golden": "32 位", "keys": ["32"]}
+{"id": "qa-h022", "domain": "tech", "difficulty": "hard", "question": "包含 10 个节点的完全图有多少条边？", "golden": "45 条", "keys": ["45"]}
+{"id": "qa-h023", "domain": "astock", "difficulty": "hard", "question": "股价 10 元涨停（涨 10%）后的价格是多少？", "golden": "11 元", "keys": ["11"]}
+{"id": "qa-h024", "domain": "astock", "difficulty": "hard", "question": "股价 10 元连续两个涨停后的价格是多少？", "golden": "12.1 元", "keys": ["12.1"]}
+{"id": "qa-h025", "domain": "astock", "difficulty": "hard", "question": "市盈率 20 倍、每股收益 2 元，对应股价是多少？", "golden": "40 元", "keys": ["40"]}
+{"id": "qa-h026", "domain": "astock", "difficulty": "hard", "question": "投入资金 10 万元，设置 5% 止损，单笔最大亏损是多少？", "golden": "5000 元", "keys": ["5000"]}
+{"id": "qa-h027", "domain": "astock", "difficulty": "hard", "question": "股价从 10 元跌到 8 元，跌幅是多少？", "golden": "20%", "keys": ["20"]}
+{"id": "qa-h028", "domain": "astock", "difficulty": "hard", "question": "股价从 8 元涨回 10 元，涨幅是多少？", "golden": "25%", "keys": ["25"]}
+{"id": "qa-h029", "domain": "astock", "difficulty": "hard", "question": "买入 100 股、每股 10 元，佣金按 0.1% 计算且最低 5 元，买入总成本多少？", "golden": "1005 元", "keys": ["1005"]}
+{"id": "qa-h030", "domain": "astock", "difficulty": "hard", "question": "每股分红 0.5 元、股价 10 元，股息率是多少？", "golden": "5%", "keys": ["5"]}
+{"id": "qa-h031", "domain": "math", "difficulty": "hard", "question": "从 1 加到 100 的和是多少？", "golden": "5050", "keys": ["5050"]}
+{"id": "qa-h032", "domain": "math", "difficulty": "hard", "question": "6 和 8 的最小公倍数是多少？", "golden": "24", "keys": ["24"]}
+{"id": "qa-h033", "domain": "math", "difficulty": "hard", "question": "36 和 48 的最大公约数是多少？", "golden": "12", "keys": ["12"]}
+{"id": "qa-h034", "domain": "math", "difficulty": "hard", "question": "同时抛两枚硬币，至少一枚正面的概率是多少？", "golden": "3/4", "keys": ["3/4"]}
+{"id": "qa-h035", "domain": "math", "difficulty": "hard", "question": "直角三角形两条直角边为 3 和 4，斜边是多少？", "golden": "5", "keys": ["5"]}
+{"id": "qa-h036", "domain": "math", "difficulty": "hard", "question": "从 5 人中选 3 人，有多少种组合？", "golden": "10 种", "keys": ["10"]}
+{"id": "qa-h037", "domain": "math", "difficulty": "hard", "question": "100 以内最大的质数是多少？", "golden": "97", "keys": ["97"]}
+{"id": "qa-h038", "domain": "math", "difficulty": "hard", "question": "80 是 200 的百分之多少？", "golden": "40%", "keys": ["40"]}
+{"id": "qa-h039", "domain": "math", "difficulty": "hard", "question": "2、4、6、8、10 的平均数是多少？", "golden": "6", "keys": ["6"]}
+{"id": "qa-h040", "domain": "math", "difficulty": "hard", "question": "半径为 2 的圆的面积是多少？", "golden": "4π", "keys": ["4π"]}
+{"id": "qa-h041", "domain": "science", "difficulty": "hard", "question": "物体自由落体 1 秒下落的距离（g 取 10）是多少？", "golden": "5 米", "keys": ["5"]}
+{"id": "qa-h042", "domain": "science", "difficulty": "hard", "question": "用 10 牛的力推动物体前进 2 米，做功多少焦耳？", "golden": "20 焦耳", "keys": ["20"]}
+{"id": "qa-h043", "domain": "science", "difficulty": "hard", "question": "12 伏电压加在 3 欧电阻上，电流是多少安？", "golden": "4 安", "keys": ["4"]}
+{"id": "qa-h044", "domain": "science", "difficulty": "hard", "question": "质量 100 克、体积 20 立方厘米的物体，密度是多少？", "golden": "5 克每立方厘米", "keys": ["5"]}
+{"id": "qa-h045", "domain": "science", "difficulty": "hard", "question": "水的摩尔质量是多少克每摩尔？", "golden": "18 克每摩尔", "keys": ["18"]}
+{"id": "qa-h046", "domain": "economy", "difficulty": "hard", "question": "汇率 1 美元兑换 7 元人民币，100 美元能换多少元？", "golden": "700 元", "keys": ["700"]}
+{"id": "qa-h047", "domain": "economy", "difficulty": "hard", "question": "物价上涨 5% 后，100 元的实际购买力约相当于原来的多少元？", "golden": "约 95 元", "keys": ["95"]}
+{"id": "qa-h048", "domain": "economy", "difficulty": "hard", "question": "产量增加一单位使总成本从 100 元增到 108 元，边际成本是多少？", "golden": "8 元", "keys": ["8"]}
+{"id": "qa-h049", "domain": "economy", "difficulty": "hard", "question": "价格上升 10% 导致需求量下降 20%，需求价格弹性是多少？", "golden": "2", "keys": ["2"]}
+{"id": "qa-h050", "domain": "economy", "difficulty": "hard", "question": "一年后收到 105 元，利率 5%，这笔钱的现值约是多少？", "golden": "100 元", "keys": ["100"]}

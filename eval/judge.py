@@ -6,12 +6,12 @@ S: 判据必须确定性；归一化只抹平格式变体（下标/空格/全角
 
 from __future__ import annotations
 
+import glob
 import json
 import os
 import unicodedata
 
 DATASETS_DIR = os.path.join(os.path.dirname(__file__), "datasets")
-QA_PATH = os.path.join(DATASETS_DIR, "golden_zh_qa.jsonl")
 
 
 def _normalize(text: str) -> str:
@@ -25,14 +25,19 @@ def _normalize(text: str) -> str:
     return text.replace(" ", "").replace("\u3000", "")
 
 
-def load_qa(path: str = QA_PATH) -> list[dict]:
-    """读中文问答 golden 集（jsonl），每行 {id, domain, question, golden, keys}。"""
+def load_qa(datasets_dir: str = DATASETS_DIR) -> list[dict]:
+    """读中文问答 golden 集（datasets/ 下所有 golden_zh_qa*.jsonl，按文件名序）。
+
+    每行 {id, domain, difficulty?, question, golden, keys}。
+    """
     items: list[dict] = []
-    with open(path, encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            if line:
-                items.append(json.loads(line))
+    pattern = os.path.join(datasets_dir, "golden_zh_qa*.jsonl")
+    for path in sorted(glob.glob(pattern)):
+        with open(path, encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if line:
+                    items.append(json.loads(line))
     return items
 
 
