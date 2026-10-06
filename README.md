@@ -31,13 +31,16 @@ python -m eval.cli --engine claude --review   # 复核同义变体（辅助）
 
 ---
 
-## benchmark（三模型实测，50 条中文问答，temperature=0）
+## benchmark（三模型实测，150 条中文问答、easy/medium/hard 三层，temperature=0）
 
-| 模型 | 通过率（复核后） |
+| 模型 | 通过率 |
 |---|---|
-| deepseek-chat | 50/50（100%） |
-| claude-opus-5-5 | 48/50（96%） |
-| gpt-6-astra | 50/50（100%） |
+| deepseek-chat | 146/150（97%） |
+| gpt-6-astra | 139/150（93%） |
+| claude-opus-5-5 | 126/150（84%） |
+
+- 难度分层：easy 50 / medium 50 / hard 50；领域 11 个（技术 / A股 / 公务员行测 / 法律 / 成语 / 经济 / 数学 / 科学 / 历史 / 地理 / 常识）。
+- 报告按难度 + 领域分层输出，能看出模型强弱项（如 deepseek 弱项：数学 8/10、行测 11/12）。
 
 复现：`uv sync` + 上表命令，任何人能重算。
 
