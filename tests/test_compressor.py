@@ -90,6 +90,28 @@ class TestCompressor(unittest.TestCase):
         """美食黑话：吃饭 → 干饭。"""
         self.assertEqual(compress("吃饭", "food"), "干饭")
 
+    def test_all_domains_registered(self) -> None:
+        """所有领域档位都能被识别（不抛异常）。"""
+        from xizi.compressor import RULES_BY_LEVEL
+
+        for level in RULES_BY_LEVEL:
+            compress("测试", level)
+
+    def test_legal_terms(self) -> None:
+        self.assertEqual(compress("依法追究刑事责任", "legal"), "追刑责")
+
+    def test_fitness_terms(self) -> None:
+        self.assertEqual(compress("力量训练", "fitness"), "撸铁")
+
+    def test_pet_terms(self) -> None:
+        self.assertEqual(compress("养猫的铲屎官", "pet"), "铲屎官")
+
+    def test_auto_terms(self) -> None:
+        self.assertEqual(compress("涡轮增压发动机", "auto"), "涡轮")
+
+    def test_beauty_terms(self) -> None:
+        self.assertEqual(compress("敏感性皮肤", "beauty"), "敏感肌")
+
     def test_unknown_level_raises(self) -> None:
         with self.assertRaises(ValueError):
             compress("文本", "unknown")

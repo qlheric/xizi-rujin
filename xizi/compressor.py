@@ -11,15 +11,25 @@ import re
 from .glossary.acg import ACG
 from .glossary.academic import ACADEMIC
 from .glossary.astock import ASTOCK
+from .glossary.auto import AUTO
+from .glossary.beauty import BEAUTY
 from .glossary.cantonese import CANTONESE
 from .glossary.cyber import CYBER
 from .glossary.fandom import FANDOM
+from .glossary.fitness import FITNESS
 from .glossary.food import FOOD
 from .glossary.gaming import GAMING
 from .glossary.gongwen import GONGWEN
 from .glossary.internet import INTERNET
+from .glossary.legal import LEGAL
 from .glossary.medical import MEDICAL
+from .glossary.parenting import PARENTING
+from .glossary.pet import PET
+from .glossary.photography import PHOTOGRAPHY
+from .glossary.realestate import REALESTATE
 from .glossary.romance import ROMANCE
+from .glossary.sports import SPORTS
+from .glossary.tech import TECH
 from .glossary.wenyan import WENYAN, XIZI
 from .glossary.workplace import WORKPLACE
 
@@ -47,6 +57,16 @@ RULES_BY_LEVEL: dict[str, dict[str, str]] = {
     "academic": ACADEMIC,
     "cantonese": CANTONESE,
     "food": FOOD,
+    "legal": LEGAL,
+    "fitness": FITNESS,
+    "photography": PHOTOGRAPHY,
+    "pet": PET,
+    "auto": AUTO,
+    "parenting": PARENTING,
+    "realestate": REALESTATE,
+    "tech": TECH,
+    "sports": SPORTS,
+    "beauty": BEAUTY,
 }
 
 
