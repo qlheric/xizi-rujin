@@ -8,13 +8,20 @@ from __future__ import annotations
 
 import re
 
+from .glossary.acg import ACG
+from .glossary.academic import ACADEMIC
 from .glossary.astock import ASTOCK
+from .glossary.cantonese import CANTONESE
 from .glossary.cyber import CYBER
+from .glossary.fandom import FANDOM
+from .glossary.food import FOOD
 from .glossary.gaming import GAMING
 from .glossary.gongwen import GONGWEN
 from .glossary.internet import INTERNET
 from .glossary.medical import MEDICAL
+from .glossary.romance import ROMANCE
 from .glossary.wenyan import WENYAN, XIZI
+from .glossary.workplace import WORKPLACE
 
 # payload 保护：反引号代码 / 英文标识符 / 数字百分比 —— 逐字符保留（五铁律 4）
 # 用「联合正则 + 一次 sub」：replacement 不会被再次扫描，避免占位符被二次匹配。
@@ -33,6 +40,13 @@ RULES_BY_LEVEL: dict[str, dict[str, str]] = {
     "cyber": CYBER,
     "gaming": GAMING,
     "medical": MEDICAL,
+    "acg": ACG,
+    "romance": ROMANCE,
+    "workplace": WORKPLACE,
+    "fandom": FANDOM,
+    "academic": ACADEMIC,
+    "cantonese": CANTONESE,
+    "food": FOOD,
 }
 
 
@@ -57,10 +71,7 @@ def _restore(text: str, frags: list[str]) -> str:
 def compress(text: str, level: str = "xizi") -> str:
     """确定性压缩。level ∈ {wenyan, xizi, heihua}。"""
     if level not in RULES_BY_LEVEL:
-        raise ValueError(
-            f"未知压缩档：{level}（可选 wenyan / xizi / heihua / astock / "
-            f"internet / gongwen / cyber / gaming / medical）"
-        )
+        raise ValueError(f"未知压缩档：{level}（可选 {' / '.join(sorted(RULES_BY_LEVEL))}）")
     rules = RULES_BY_LEVEL[level]
     protected, frags = _protect(text)
     # 长词优先，避免短词先替换破坏长词

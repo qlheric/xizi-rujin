@@ -62,6 +62,34 @@ class TestCompressor(unittest.TestCase):
         """医疗缩写：急性心肌梗死 → 心梗。"""
         self.assertEqual(compress("急性心肌梗死", "medical"), "心梗")
 
+    def test_acg_terms(self) -> None:
+        """二次元术语：动画剧集 → 番。"""
+        self.assertEqual(compress("动画剧集", "acg"), "番")
+
+    def test_romance_terms(self) -> None:
+        """恋爱术语：心动对象 → crush。"""
+        self.assertEqual(compress("心动对象", "romance"), "crush")
+
+    def test_workplace_terms(self) -> None:
+        """职场黑话：被公司辞退 → 毕业。"""
+        self.assertEqual(compress("被公司辞退", "workplace"), "毕业")
+
+    def test_fandom_terms(self) -> None:
+        """饭圈黑话：偶像塌房 → 塌房。"""
+        self.assertEqual(compress("偶像塌房", "fandom"), "塌房")
+
+    def test_academic_terms(self) -> None:
+        """学术黑话：考研成功上岸 → 上岸。"""
+        self.assertEqual(compress("考研成功上岸", "academic"), "上岸")
+
+    def test_cantonese_terms(self) -> None:
+        """粤语：没有 → 冇。"""
+        self.assertEqual(compress("没有", "cantonese"), "冇")
+
+    def test_food_terms(self) -> None:
+        """美食黑话：吃饭 → 干饭。"""
+        self.assertEqual(compress("吃饭", "food"), "干饭")
+
     def test_unknown_level_raises(self) -> None:
         with self.assertRaises(ValueError):
             compress("文本", "unknown")
