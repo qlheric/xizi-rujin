@@ -1,0 +1,50 @@
+{"id": "qa-001", "domain": "general", "question": "中国的首都是哪个城市？", "golden": "北京", "keys": ["北京"]}
+{"id": "qa-002", "domain": "general", "question": "中国共有多少个省级行政区？", "golden": "34个省级行政区", "keys": ["34"]}
+{"id": "qa-003", "domain": "general", "question": "平年一年有多少天？", "golden": "365天", "keys": ["365"]}
+{"id": "qa-004", "domain": "science", "question": "水的化学式是什么？", "golden": "H2O", "keys": ["H2O"]}
+{"id": "qa-005", "domain": "general", "question": "中国最长的河流是哪条？", "golden": "长江", "keys": ["长江"]}
+{"id": "qa-006", "domain": "general", "question": "世界上最高的山峰是哪座？", "golden": "珠穆朗玛峰", "keys": ["珠穆朗玛峰"]}
+{"id": "qa-007", "domain": "general", "question": "人民币的货币符号是什么？", "golden": "¥", "keys": ["¥"]}
+{"id": "qa-008", "domain": "general", "question": "中国的国庆节是几月几日？", "golden": "10月1日", "keys": ["10月1日"]}
+{"id": "qa-009", "domain": "science", "question": "光在真空中的速度大约是多少？", "golden": "约30万公里每秒", "keys": ["30万公里"]}
+{"id": "qa-010", "domain": "geography", "question": "中国面积最大的省级行政区是哪个？", "golden": "新疆维吾尔自治区", "keys": ["新疆"]}
+{"id": "qa-011", "domain": "tech", "question": "Python 字典从哪个版本开始保证插入顺序？", "golden": "Python 3.7", "keys": ["3.7"]}
+{"id": "qa-012", "domain": "tech", "question": "HTTP 状态码 404 表示什么意思？", "golden": "404 表示资源未找到", "keys": ["404", "未找到"]}
+{"id": "qa-013", "domain": "tech", "question": "SQL 中 INNER JOIN 和 LEFT JOIN 的区别是什么？", "golden": "INNER JOIN 只返回两表都匹配的行，LEFT JOIN 保留左表全部行", "keys": ["INNER JOIN", "LEFT JOIN"]}
+{"id": "qa-014", "domain": "tech", "question": "React 的 useState 是用来做什么的？", "golden": "useState 用于管理组件状态", "keys": ["useState", "状态"]}
+{"id": "qa-015", "domain": "tech", "question": "TCP 和 UDP 的主要区别是什么？", "golden": "TCP 可靠面向连接，UDP 不可靠无连接", "keys": ["TCP", "UDP"]}
+{"id": "qa-016", "domain": "tech", "question": "比较排序算法的时间复杂度下限是多少？", "golden": "O(n log n)", "keys": ["n log n"]}
+{"id": "qa-017", "domain": "tech", "question": "数据库索引的主要作用是什么？", "golden": "加速查询", "keys": ["加速"]}
+{"id": "qa-018", "domain": "tech", "question": "JSON 的英文全称是什么？", "golden": "JavaScript Object Notation", "keys": ["JavaScript Object Notation"]}
+{"id": "qa-019", "domain": "tech", "question": "正则表达式 \\d 匹配什么字符？", "golden": "任意数字", "keys": ["数字"]}
+{"id": "qa-020", "domain": "tech", "question": "一个字节有多少个比特位？", "golden": "8位", "keys": ["8"]}
+{"id": "qa-021", "domain": "astock", "question": "A股主板股票的涨跌幅限制是多少？", "golden": "10%", "keys": ["10%"]}
+{"id": "qa-022", "domain": "astock", "question": "市盈率是如何计算的？", "golden": "股价除以每股收益", "keys": ["股价", "每股收益"]}
+{"id": "qa-023", "domain": "astock", "question": "股票术语「割肉」是什么意思？", "golden": "股价下跌后为避免继续亏损忍痛卖出", "keys": ["卖出"]}
+{"id": "qa-024", "domain": "astock", "question": "均线「金叉」是指什么？", "golden": "短期均线上穿长期均线", "keys": ["上穿"]}
+{"id": "qa-025", "domain": "astock", "question": "A股实行的交易制度是什么？", "golden": "T+1 交易制度", "keys": ["T+1"]}
+{"id": "qa-026", "domain": "astock", "question": "股票「涨停」是指什么？", "golden": "涨停是指股价上涨到当日涨幅上限", "keys": ["涨停"]}
+{"id": "qa-027", "domain": "astock", "question": "龙虎榜公布的是什么数据？", "golden": "龙虎榜公布当日异动股票的买卖席位", "keys": ["龙虎榜", "席位"]}
+{"id": "qa-028", "domain": "astock", "question": "「仓位管理」的核心是什么？", "golden": "控制风险，按比例投入资金", "keys": ["控制", "风险"]}
+{"id": "qa-029", "domain": "astock", "question": "「抄底」是什么意思？", "golden": "在股价低位时买入", "keys": ["买入"]}
+{"id": "qa-030", "domain": "astock", "question": "「除权除息」会导致股价发生什么变化？", "golden": "股价相应下调，总市值不变", "keys": ["下调"]}
+{"id": "qa-031", "domain": "history", "question": "中华人民共和国成立于哪一年？", "golden": "1949年", "keys": ["1949"]}
+{"id": "qa-032", "domain": "history", "question": "唐朝的都城是哪里？", "golden": "长安", "keys": ["长安"]}
+{"id": "qa-033", "domain": "history", "question": "五四运动发生在哪一年？", "golden": "1919年", "keys": ["1919"]}
+{"id": "qa-034", "domain": "history", "question": "郑和下西洋发生在哪个朝代？", "golden": "明朝", "keys": ["明朝"]}
+{"id": "qa-035", "domain": "history", "question": "秦始皇统一六国大约在公元前哪一年？", "golden": "公元前221年", "keys": ["221"]}
+{"id": "qa-036", "domain": "geography", "question": "长江的发源地是哪里？", "golden": "唐古拉山", "keys": ["唐古拉山"]}
+{"id": "qa-037", "domain": "geography", "question": "中国陆上邻国共有多少个？", "golden": "14个", "keys": ["14"]}
+{"id": "qa-038", "domain": "geography", "question": "黄河最终注入哪个海？", "golden": "渤海", "keys": ["渤海"]}
+{"id": "qa-039", "domain": "geography", "question": "珠穆朗玛峰的最新海拔高度是多少？", "golden": "8848.86米", "keys": ["8848"]}
+{"id": "qa-040", "domain": "science", "question": "光年是长度单位还是时间单位？", "golden": "长度单位", "keys": ["长度"]}
+{"id": "qa-041", "domain": "science", "question": "人体正常体温大约是多少摄氏度？", "golden": "37摄氏度左右", "keys": ["37"]}
+{"id": "qa-042", "domain": "science", "question": "圆周率的近似值是多少？", "golden": "3.14", "keys": ["3.14"]}
+{"id": "qa-043", "domain": "science", "question": "元素周期表中第一号元素是什么？", "golden": "氢", "keys": ["氢"]}
+{"id": "qa-044", "domain": "science", "question": "声音在空气中传播速度大约是多少？", "golden": "约340米每秒", "keys": ["340"]}
+{"id": "qa-045", "domain": "science", "question": "关于恐龙灭绝的主流假说是什么？", "golden": "小行星撞击", "keys": ["小行星"]}
+{"id": "qa-046", "domain": "science", "question": "太阳系中体积最大的行星是哪颗？", "golden": "木星", "keys": ["木星"]}
+{"id": "qa-047", "domain": "science", "question": "DNA 的空间结构是什么？", "golden": "双螺旋结构", "keys": ["双螺旋"]}
+{"id": "qa-048", "domain": "science", "question": "地球上面积最大的海洋是哪个？", "golden": "太平洋", "keys": ["太平洋"]}
+{"id": "qa-049", "domain": "general", "question": "中国最大的内陆咸水湖是哪个？", "golden": "青海湖", "keys": ["青海湖"]}
+{"id": "qa-050", "domain": "general", "question": "二十四节气中第一个节气是什么？", "golden": "立春", "keys": ["立春"]}

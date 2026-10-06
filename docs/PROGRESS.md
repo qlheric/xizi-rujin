@@ -29,6 +29,7 @@
 - 2026-10-06：放大器执行 —— 发帖 X + 掘金（即刻/V2EX 有注册门槛，暂缓）；awesome PR 提交 2 个（travisvn/awesome-claude-skills 表格行 + VoltAgent/awesome-agent-skills 的 Context Engineering 区），待 maintainer review。
 - 2026-10-06：真实使用案例（老大拍「做真实使用案例」）——stock-tool 真实话术做「黑话 vs 白话」对比（省 39~51%），案例落 `docs/case-study.md`；**只读 stock-tool、未碰任何生产代码**。
 - 2026-10-06：S1 收口（老大拍「本会话只 S1 + 后续维护」）——后续维护 = 盯 2 个 awesome PR（travisvn/awesome-claude-skills + VoltAgent/awesome-agent-skills）review 状态，有评论即改；PR 号待老大补。
+- 2026-10-06：S1 再转型（老大拍「转 ponytail 式规则」→ 交叉评审否掉「反过度规则复刻经营」→ 收敛「中文 agent 可信评测」）——可信评测最小闭环完成：golden 50 条 + judge（关键信息保真+归一化）+ assertions（阴性对照）+ report（失败分析）+ cli（mock/真实LLM/复核）；三模型实测 deepseek 100% / claude 96% / gpt 100%；沉淀 keys 设计原则（核心且不可同义替换）+ 归一化（H₂O→H2O）+ LLM-judge 复核（同义变体）。
 
 ## P2 评测数字（真实实测，2026-10-06）
 
