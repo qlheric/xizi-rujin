@@ -59,6 +59,8 @@ uv run python -m eval.judge_eval         # LLM-judge 整体语义（需 DEEPSEEK
 
 **诚实说明**：①压缩率因句子类型而异——冗余中文（模拟 agent 真实啰嗦输出）省 62.4%，术语 / 专名密集的精炼技术句只省 25.6%（英文 payload 必须原样保留）。②tokenizer 口径影响绝对数字（o200k 37.9% / cl100k 43.2%），但「显著省 token」的结论稳健。③端到端 9/10 的 1 个失败是「JavaScript 缩成 JS」这类专名缩写（真实 agent 也会犯），正是五铁律「专名不丢」要防的边界。数字是 golden 集实测，不是全场景天花板。
 
+**真实使用案例**（benchmark 之外的真实项目证据）：真实 A股项目 stock-tool 的生产话术里，A股黑话对比「说人话」实测省 **39~51% token**——「领域化压缩」不是 demo，黑话早就在真实项目里省 token。详见 `docs/case-study.md`。
+
 ---
 
 ## 安装

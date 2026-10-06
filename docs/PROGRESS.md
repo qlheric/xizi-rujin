@@ -27,6 +27,7 @@
 - 2026-10-06：放大器（老大拍「先做放大器」）——写技术深度文 `docs/article.md`（方法学 + 诚实 benchmark + 23 领域），供知乎/掘金发布。
 - 2026-10-06：放大器（续）——调研 awesome 收录目标（4 个列表 + GitHub topics），清单落 `docs/awesome-submission.md`；提交 PR 待 qlheric 账号。
 - 2026-10-06：放大器执行 —— 发帖 X + 掘金（即刻/V2EX 有注册门槛，暂缓）；awesome PR 提交 2 个（travisvn/awesome-claude-skills 表格行 + VoltAgent/awesome-agent-skills 的 Context Engineering 区），待 maintainer review。
+- 2026-10-06：真实使用案例（老大拍「做真实使用案例」）——stock-tool 真实话术做「黑话 vs 白话」对比（省 39~51%），案例落 `docs/case-study.md`；**只读 stock-tool、未碰任何生产代码**。
 
 ## P2 评测数字（真实实测，2026-10-06）
 
