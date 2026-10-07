@@ -36,6 +36,8 @@
 - 2026-10-06：弱模型对照（老大提供百炼 key BAILIANAPIKEY）——qwen-turbo 150 条 99%，**它不是弱模型**（中文问答+计算强）；修三处真问题：复核洗白数字（严格 prompt：数字精确+解题过程不算）、max_tokens 截断详细解题（200→2000）、urllib 读 IE 死代理（改直连 _NO_PROXY_OPENER）；归一化加去千分位逗号。
 - 2026-10-06：真难题 50 条（hardplus：行测数量/逻辑/高考数学，老大拍「加」）——总量 200（easy/medium/hard/hardplus 各 50）；deepseek 200 条 98%（hardplus 46/50）vs qwen 96%（hardplus 45/50），区分度仍小（两个中文模型都强）；gpt/claude 200 条后台补跑中。
 - 2026-10-06：B 收尾 —— 四模型 hardplus：gpt 49/50（98%）、claude 48/50（96%）、deepseek 46/50（92%）、qwen 45/50（90%）；全程又修 4 处：medium 28 条 keys 违规（题目术语不在 golden，mock 假象被"满分断言"戳穿）、LaTeX 归一化（frac/boxed/pi）、gpt 渠道走代理分路（4sapi.com 直连超时）、hp048 出题错误（1.25×0.8=1 抵消，改打 9 折）；诚实结论：四强模型都在 96~98% 高分段，真分层需压轴题难度。
+- 2026-10-07：方向再评审（老大问「方向真的对吗」→ 换模型评审「质检员人格」）——两模型共识：收窄定位到「拦截假绿」（agent 说"搞定/通过"时拦截）、薄人格+硬工具（变异测试/静态检测）、benchmark 测错误放行率四组对照、口号「没红过的绿，都是假绿」；老大拍「按修正方向分阶段升级，每阶段最小实现停一下验收」。
+- 2026-10-07：升级阶段 1 完成（假绿静态检测器 `eval/fake_green.py`，等老大验收）——6 类作弊模式（assert True/False、skip/xfail、except pass 吞异常、无断言、assertEqual 同源）；真实 tests 验收抓出 2 误报（unittest self.assertXxx、防御性 except）+ 1 真弱断言（test_all_domains_registered）并修复；最终 0 误报 + 29 单测回归绿。
 
 ## P2 评测数字（真实实测，2026-10-06）
 
