@@ -1,0 +1,2 @@
+def adjust(x):
+    return x + 1 if x > 0 else x - 1

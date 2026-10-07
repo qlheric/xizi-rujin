@@ -18,13 +18,13 @@ from .mutation_test import run_mutation
 TRAPS_DIR = os.path.join(os.path.dirname(__file__), "traps")
 
 
-def load_traps() -> list[tuple[str, str, str]]:
+def load_traps(traps_dir: str = TRAPS_DIR) -> list[tuple[str, str, str]]:
     """返回 [(base, src_path, test_path)]。"""
     traps = []
-    for name in sorted(os.listdir(TRAPS_DIR)):
+    for name in sorted(os.listdir(traps_dir)):
         if name.endswith("_test.py"):
             base = name[: -len("_test.py")]
-            traps.append((base, os.path.join(TRAPS_DIR, base + ".py"), os.path.join(TRAPS_DIR, name)))
+            traps.append((base, os.path.join(traps_dir, base + ".py"), os.path.join(traps_dir, name)))
     return traps
 
 
@@ -65,9 +65,10 @@ def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--llm", action="store_true", help="跑组 1-3（LLM 判定，慢）；默认只跑组 4 工具链")
     ap.add_argument("--engine", default="deepseek")
+    ap.add_argument("--dir", default=TRAPS_DIR, help="陷阱目录（默认 eval/traps；v2 用 eval/traps_v2）")
     args = ap.parse_args(argv)
 
-    traps = load_traps()
+    traps = load_traps(args.dir)
     print(f"陷阱集：{len(traps)} 个假绿陷阱（有 bug 的源码 + 假绿测试）\n")
 
     # 组 4：确定性工具链

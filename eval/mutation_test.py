@@ -54,33 +54,40 @@ def _mutate_node(node: ast.AST) -> list[tuple[ast.AST, str]]:
 def generate_mutants(source: str) -> list[tuple[str, str]]:
     """生成变异体列表 [(变异后源码, 描述)]。
 
-    在同一次 ast.parse 的树内完成「找变异点 + 注入」（id(node) 跨 parse 不稳定，
-    分两次 parse 会让注入撞错节点——实测踩过：把 def 参数变异了）。
+    两坑都踩过：①id(node) 跨 parse 不稳定（变异撞错节点）②NodeTransformer 原地改树，
+    第一个变异体注入后树被改（Constant 被替换掉），后续变异体找不到目标。
+    正解：「行号+列号+类型」定位（跨树稳定）+ 每个变异体用**新 parse 的树**注入。
     """
-    tree = ast.parse(source)
-    mutants: list[tuple[str, str]] = []
-    for node in ast.walk(tree):
+    base = ast.parse(source)
+    spots: list[tuple[tuple[int, int, str], ast.AST, str]] = []
+    for node in ast.walk(base):
         for m, desc in _mutate_node(node):
-            if len(mutants) >= MUTANT_LIMIT:
-                return mutants
-            injector = _Injector(id(node), m)
-            try:
-                mutated = ast.unparse(injector.visit(tree))
-            except Exception:
-                continue  # 变异产生非法语法则跳过该变异体
-            mutants.append((mutated, desc))
+            key = (getattr(node, "lineno", 0), getattr(node, "col_offset", 0), type(node).__name__)
+            spots.append((key, m, desc))
+    mutants: list[tuple[str, str]] = []
+    for key, m, desc in spots:
+        tree = ast.parse(source)  # 每次新树，防原地修改污染
+        injector = _Injector(key, m)
+        try:
+            mutated = ast.unparse(injector.visit(tree))
+        except Exception:
+            continue  # 变异产生非法语法则跳过该变异体
+        mutants.append((mutated, desc))
+        if len(mutants) >= MUTANT_LIMIT:
+            break
     return mutants
 
 
 class _Injector(ast.NodeTransformer):
-    """把指定 id 的节点替换成变异体。"""
+    """把指定「位置+类型」的节点替换成变异体。"""
 
-    def __init__(self, target_id: int, replacement: ast.AST):
-        self.target_id = target_id
+    def __init__(self, key: tuple[int, int, str], replacement: ast.AST):
+        self.key = key
         self.replacement = replacement
 
     def visit(self, node):  # noqa: D102
-        if id(node) == self.target_id:
+        key = (getattr(node, "lineno", 0), getattr(node, "col_offset", 0), type(node).__name__)
+        if key == self.key:
             return self.replacement
         return super().visit(node)
 
