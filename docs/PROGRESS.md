@@ -35,6 +35,7 @@
 - 2026-10-06：三模型 150 条对比 —— deepseek 97% / gpt 93% / claude 84%；run_agent 加 3 次重试（抗网络波动）；claude 出现「easy 42/50 反而低于 hard 46/50」的推理模型行为差异（可信评测抓出的真实现象）。
 - 2026-10-06：弱模型对照（老大提供百炼 key BAILIANAPIKEY）——qwen-turbo 150 条 99%，**它不是弱模型**（中文问答+计算强）；修三处真问题：复核洗白数字（严格 prompt：数字精确+解题过程不算）、max_tokens 截断详细解题（200→2000）、urllib 读 IE 死代理（改直连 _NO_PROXY_OPENER）；归一化加去千分位逗号。
 - 2026-10-06：真难题 50 条（hardplus：行测数量/逻辑/高考数学，老大拍「加」）——总量 200（easy/medium/hard/hardplus 各 50）；deepseek 200 条 98%（hardplus 46/50）vs qwen 96%（hardplus 45/50），区分度仍小（两个中文模型都强）；gpt/claude 200 条后台补跑中。
+- 2026-10-06：B 收尾 —— 四模型 hardplus：gpt 49/50（98%）、claude 48/50（96%）、deepseek 46/50（92%）、qwen 45/50（90%）；全程又修 4 处：medium 28 条 keys 违规（题目术语不在 golden，mock 假象被"满分断言"戳穿）、LaTeX 归一化（frac/boxed/pi）、gpt 渠道走代理分路（4sapi.com 直连超时）、hp048 出题错误（1.25×0.8=1 抵消，改打 9 折）；诚实结论：四强模型都在 96~98% 高分段，真分层需压轴题难度。
 
 ## P2 评测数字（真实实测，2026-10-06）
 

@@ -45,6 +45,6 @@
 {"id": "qa-hp045", "domain": "gongwu", "difficulty": "hardplus", "question": "祖父、父亲、孙子三代人年龄和是 100 岁，祖父年龄是孙子的 6 倍，父亲是孙子的 3 倍，孙子几岁？", "golden": "10 岁", "keys": ["10"]}
 {"id": "qa-hp046", "domain": "gongwu", "difficulty": "hardplus", "question": "甲乙两车从相距 300 公里的两地相向而行，甲 60 公里每小时、乙 40 公里每小时，几小时后相遇？", "golden": "3 小时", "keys": ["3"]}
 {"id": "qa-hp047", "domain": "gongwu", "difficulty": "hardplus", "question": "一件工作甲单独做 6 天完成，甲做了 2 天后乙加入又做了 1.5 天完成，乙单独做需要几天？", "golden": "3.6 天", "keys": ["3.6"]}
-{"id": "qa-hp048", "domain": "gongwu", "difficulty": "hardplus", "question": "某商品按进价加价 25% 出售，后因滞销打 8 折，仍获利 100 元，进价是多少元？", "golden": "1000 元", "keys": ["1000"]}
+{"id": "qa-hp048", "domain": "gongwu", "difficulty": "hardplus", "question": "某商品按进价加价 25% 标价，后因滞销打 9 折出售，仍获利 100 元，进价是多少元？", "golden": "800 元", "keys": ["800"]}
 {"id": "qa-hp049", "domain": "gongwu", "difficulty": "hardplus", "question": "甲乙丙三人按 3:2:1 的比例出资 6 万元开店，甲出资多少万元？", "golden": "3 万元", "keys": ["3"]}
 {"id": "qa-hp050", "domain": "gongwu", "difficulty": "hardplus", "question": "一本书按原价打 9 折出售便宜了 6 元，原价是多少元？", "golden": "60 元", "keys": ["60"]}

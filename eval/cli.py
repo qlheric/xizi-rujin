@@ -51,8 +51,8 @@ def run_agent(engine: str, question: str) -> str:
         payload = {"model": model, "messages": [{"role": "user", "content": question}], "max_tokens": 2000, "temperature": 0}
     elif engine == "gpt":
         url, model, key = GPT_URL, "gpt-6-astra", _load_key("S4API_API_KEY")
-        # 推理模型：推理阶段耗 token，max_completion_tokens 要给足（实测 200 会空答）
-        payload = {"model": model, "messages": [{"role": "user", "content": question}], "max_completion_tokens": 4000, "temperature": 0}
+        # 推理模型：推理阶段耗 token，枚举式答案实测 4000 仍会被截断，给足 8000
+        payload = {"model": model, "messages": [{"role": "user", "content": question}], "max_completion_tokens": 8000, "temperature": 0}
     elif engine == "qwen":
         url, model, key = QWEN_URL, "qwen-turbo", _load_key("BAILIANAPIKEY")
         # 详细解题型模型：max_tokens 要给足（实测 200 会截断在解题过程、写不到最终答案）
