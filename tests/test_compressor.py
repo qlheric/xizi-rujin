@@ -91,11 +91,12 @@ class TestCompressor(unittest.TestCase):
         self.assertEqual(compress("吃饭", "food"), "干饭")
 
     def test_all_domains_registered(self) -> None:
-        """所有领域档位都能被识别（不抛异常）。"""
+        """所有领域档位都能被识别，且每个档位都有规则、输出为字符串。"""
         from xizi.compressor import RULES_BY_LEVEL
 
+        self.assertTrue(len(RULES_BY_LEVEL) >= 23)
         for level in RULES_BY_LEVEL:
-            compress("测试", level)
+            self.assertIsInstance(compress("测试", level), str)
 
     def test_legal_terms(self) -> None:
         self.assertEqual(compress("依法追究刑事责任", "legal"), "追刑责")
