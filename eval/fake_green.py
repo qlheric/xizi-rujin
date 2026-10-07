@@ -47,10 +47,15 @@ def scan_source(source: str, filename: str = "<src>") -> list[dict]:
         has_assert = any(isinstance(n, ast.Assert) for n in ast.walk(fn))
         if not has_assert:
             findings.append({"kind": "no_assert", "line": fn.lineno, "detail": f"测试函数 {fn.name} 没有任何 assert"})
-    # assertEqual(x, x) 左右同源恒真（AST 结构比对，覆盖带括号参数如 foo()）
+    # assertEqual(x, x) 左右同源恒真（AST 结构比对，覆盖裸调用与 self. 两种形态）
     for node in ast.walk(tree):
-        if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute) and node.func.attr in ("assertEqual", "assertEquals"):
-            if len(node.args) == 2 and ast.dump(node.args[0]) == ast.dump(node.args[1]):
+        if isinstance(node, ast.Call):
+            func_name = None
+            if isinstance(node.func, ast.Attribute):
+                func_name = node.func.attr
+            elif isinstance(node.func, ast.Name):
+                func_name = node.func.id
+            if func_name in ("assertEqual", "assertEquals") and len(node.args) == 2 and ast.dump(node.args[0]) == ast.dump(node.args[1]):
                 findings.append({"kind": "assert_same_source", "line": node.lineno, "detail": "assertEqual 左右参数同源——恒真"})
     return findings
 
