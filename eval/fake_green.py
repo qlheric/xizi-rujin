@@ -18,7 +18,6 @@ _CHEAT_PATTERNS = [
     ("skip", re.compile(r"(pytest\.mark\.skip|\.skip\s*\()"), "跳过测试"),
     ("xfail", re.compile(r"(pytest\.mark\.xfail|\.xfail\s*\()"), "预期失败——不算绿"),
     ("except_pass", re.compile(r"except[^\n:]*:\s*pass\b"), "吞异常——错误被吃"),
-    ("assert_equal_same", re.compile(r"assertEqual\s*\(\s*([^,()]+)\s*,\s*\1\s*\)"), "assertEqual(x, x)——左右同源恒真"),
 ]
 
 
@@ -48,6 +47,11 @@ def scan_source(source: str, filename: str = "<src>") -> list[dict]:
         has_assert = any(isinstance(n, ast.Assert) for n in ast.walk(fn))
         if not has_assert:
             findings.append({"kind": "no_assert", "line": fn.lineno, "detail": f"测试函数 {fn.name} 没有任何 assert"})
+    # assertEqual(x, x) 左右同源恒真（AST 结构比对，覆盖带括号参数如 foo()）
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute) and node.func.attr in ("assertEqual", "assertEquals"):
+            if len(node.args) == 2 and ast.dump(node.args[0]) == ast.dump(node.args[1]):
+                findings.append({"kind": "assert_same_source", "line": node.lineno, "detail": "assertEqual 左右参数同源——恒真"})
     return findings
 
 
