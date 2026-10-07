@@ -33,6 +33,8 @@
 - 2026-10-06：名字保持「惜字如金」（老大拍「中文博大精深」）——新诠释：不只省字，更是对每个字较真（可信评测的严谨）。
 - 2026-10-06：可信评测扩量（老大拍「扩量 + 弱模型」）——golden 50→150（easy 50/medium 50/hard 50，借鉴 C-Eval 分层 + CMMLU 中国特有主题），新增领域 gongwu/economy/law/idiom/math；报告加按难度/领域分层；deepseek 150 条 146/150（97%），弱项 math 8/10、gongwu 11/12、tech 29/30。
 - 2026-10-06：三模型 150 条对比 —— deepseek 97% / gpt 93% / claude 84%；run_agent 加 3 次重试（抗网络波动）；claude 出现「easy 42/50 反而低于 hard 46/50」的推理模型行为差异（可信评测抓出的真实现象）。
+- 2026-10-06：弱模型对照（老大提供百炼 key BAILIANAPIKEY）——qwen-turbo 150 条 99%，**它不是弱模型**（中文问答+计算强）；修三处真问题：复核洗白数字（严格 prompt：数字精确+解题过程不算）、max_tokens 截断详细解题（200→2000）、urllib 读 IE 死代理（改直连 _NO_PROXY_OPENER）；归一化加去千分位逗号。
+- 2026-10-06：真难题 50 条（hardplus：行测数量/逻辑/高考数学，老大拍「加」）——总量 200（easy/medium/hard/hardplus 各 50）；deepseek 200 条 98%（hardplus 46/50）vs qwen 96%（hardplus 45/50），区分度仍小（两个中文模型都强）；gpt/claude 200 条后台补跑中。
 
 ## P2 评测数字（真实实测，2026-10-06）
 
