@@ -37,7 +37,8 @@
 - 2026-10-06：真难题 50 条（hardplus：行测数量/逻辑/高考数学，老大拍「加」）——总量 200（easy/medium/hard/hardplus 各 50）；deepseek 200 条 98%（hardplus 46/50）vs qwen 96%（hardplus 45/50），区分度仍小（两个中文模型都强）；gpt/claude 200 条后台补跑中。
 - 2026-10-06：B 收尾 —— 四模型 hardplus：gpt 49/50（98%）、claude 48/50（96%）、deepseek 46/50（92%）、qwen 45/50（90%）；全程又修 4 处：medium 28 条 keys 违规（题目术语不在 golden，mock 假象被"满分断言"戳穿）、LaTeX 归一化（frac/boxed/pi）、gpt 渠道走代理分路（4sapi.com 直连超时）、hp048 出题错误（1.25×0.8=1 抵消，改打 9 折）；诚实结论：四强模型都在 96~98% 高分段，真分层需压轴题难度。
 - 2026-10-07：方向再评审（老大问「方向真的对吗」→ 换模型评审「质检员人格」）——两模型共识：收窄定位到「拦截假绿」（agent 说"搞定/通过"时拦截）、薄人格+硬工具（变异测试/静态检测）、benchmark 测错误放行率四组对照、口号「没红过的绿，都是假绿」；老大拍「按修正方向分阶段升级，每阶段最小实现停一下验收」。
-- 2026-10-07：升级阶段 1 完成（假绿静态检测器 `eval/fake_green.py`，等老大验收）——6 类作弊模式（assert True/False、skip/xfail、except pass 吞异常、无断言、assertEqual 同源）；真实 tests 验收抓出 2 误报（unittest self.assertXxx、防御性 except）+ 1 真弱断言（test_all_domains_registered）并修复；最终 0 误报 + 29 单测回归绿。
+- 2026-10-07：升级阶段 1 完成（假绿静态检测器 `eval/fake_green.py`，老大验收通过）——6 类作弊模式（assert True/False、skip/xfail、except pass 吞异常、无断言、assertEqual 同源）；真实 tests 验收抓出 2 误报（unittest self.assertXxx、防御性 except）+ 1 真弱断言（test_all_domains_registered）并修复；最终 0 误报 + 29 单测回归绿。
+- 2026-10-07：升级阶段 2 完成（简化变异测试器 `eval/mutation_test.py`，等老大验收）——标准库 ast 零依赖 8 算子（==→!=、>→>=、+→-、and→or、True↔False、数字+1、return→None、赋值→None）+ 变异得分；真红验证：好测试 3/3 杀（100%）vs 假绿 assert True 0/3 存活（0%），源文件 finally 恢复；踩坑：id(node) 跨 parse 不稳定（变异撞错 def 参数）→ 同树注入；pwsh 引号嵌套传错 cmd → 验证方式修正。
 
 ## P2 评测数字（真实实测，2026-10-06）
 
