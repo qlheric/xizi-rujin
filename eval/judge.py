@@ -15,14 +15,14 @@ DATASETS_DIR = os.path.join(os.path.dirname(__file__), "datasets")
 
 
 def _normalize(text: str) -> str:
-    """归一化格式变体：Unicode 兼容分解（H₂O→H2O、全角→半角）+ 去空格。
+    """归一化格式变体：Unicode 兼容分解（H₂O→H2O、全角→半角）+ 去空格/千分位逗号。
 
     只抹平格式差异，不改变语义——让「答对但格式不同」不误判，「真答错」仍红。
     """
     if not text:
         return ""
     text = unicodedata.normalize("NFKC", text)
-    return text.replace(" ", "").replace("\u3000", "")
+    return text.replace(" ", "").replace("\u3000", "").replace(",", "")
 
 
 def load_qa(datasets_dir: str = DATASETS_DIR) -> list[dict]:

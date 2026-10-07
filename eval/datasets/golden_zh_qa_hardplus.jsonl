@@ -1,0 +1,50 @@
+{"id": "qa-hp001", "domain": "gongwu", "difficulty": "hardplus", "question": "甲先步行出发 2 小时，速度 4 公里每小时；乙随后以 6 公里每小时追赶，乙出发后几小时追上甲？", "golden": "4 小时", "keys": ["4"]}
+{"id": "qa-hp002", "domain": "gongwu", "difficulty": "hardplus", "question": "400 米环形跑道上，甲乙同向出发，甲速 6 米每秒、乙速 4 米每秒，甲第一次追上乙需要多少秒？", "golden": "200 秒", "keys": ["200"]}
+{"id": "qa-hp003", "domain": "gongwu", "difficulty": "hardplus", "question": "一项工程甲单独做 10 天、乙 15 天、丙 20 天，三人合作需要几天完成？", "golden": "60/13 天", "keys": ["60/13"]}
+{"id": "qa-hp004", "domain": "gongwu", "difficulty": "hardplus", "question": "一项工程甲单独做 12 天、乙单独做 8 天；甲先做 3 天后乙加入，还需几天完成？", "golden": "3.6 天", "keys": ["3.6"]}
+{"id": "qa-hp005", "domain": "gongwu", "difficulty": "hardplus", "question": "100 克浓度为 20% 的盐水和 300 克浓度为 5% 的盐水混合，混合后浓度是多少？", "golden": "8.75%", "keys": ["8.75"]}
+{"id": "qa-hp006", "domain": "gongwu", "difficulty": "hardplus", "question": "5 人排成一队，甲必须在乙左边的排法有多少种？", "golden": "60 种", "keys": ["60"]}
+{"id": "qa-hp007", "domain": "gongwu", "difficulty": "hardplus", "question": "从 3 女 5 男共 8 人中选 3 人，至少选 1 名女性的选法有多少种？", "golden": "46 种", "keys": ["46"]}
+{"id": "qa-hp008", "domain": "gongwu", "difficulty": "hardplus", "question": "袋中有 5 个红球、3 个白球，随机摸 2 个球颜色相同的概率是多少？", "golden": "13/28", "keys": ["13/28"]}
+{"id": "qa-hp009", "domain": "gongwu", "difficulty": "hardplus", "question": "5 年前父亲年龄是儿子的 5 倍，现在父子年龄和是 40 岁，父亲现在多少岁？", "golden": "30 岁", "keys": ["30"]}
+{"id": "qa-hp010", "domain": "gongwu", "difficulty": "hardplus", "question": "商品进价 100 元，标价 150 元，按标价打 8 折出售，利润是多少元？", "golden": "20 元", "keys": ["20"]}
+{"id": "qa-hp011", "domain": "gongwu", "difficulty": "hardplus", "question": "商品成本 200 元，加价 50% 标价，再连续打 9 折两次，最终利润是多少元？", "golden": "43 元", "keys": ["43"]}
+{"id": "qa-hp012", "domain": "gongwu", "difficulty": "hardplus", "question": "数列 1、1、2、3、5、8 的下一个数是多少？", "golden": "13", "keys": ["13"]}
+{"id": "qa-hp013", "domain": "gongwu", "difficulty": "hardplus", "question": "数列 1、4、9、16、25 的下一个数是多少？", "golden": "36", "keys": ["36"]}
+{"id": "qa-hp014", "domain": "gongwu", "difficulty": "hardplus", "question": "正方形对角线长为 10，正方形的面积是多少？", "golden": "50", "keys": ["50"]}
+{"id": "qa-hp015", "domain": "gongwu", "difficulty": "hardplus", "question": "圆柱体底面半径 3、高 4，体积是多少（用 π 表示）？", "golden": "36π", "keys": ["36π"]}
+{"id": "qa-hp016", "domain": "logic", "difficulty": "hardplus", "question": "甲乙丙三人中只有一人说真话。甲说「乙说谎」，乙说「丙说谎」，丙说「甲乙都说谎」。谁说真话？", "golden": "乙说真话", "keys": ["乙"]}
+{"id": "qa-hp017", "domain": "logic", "difficulty": "hardplus", "question": "A、B、C、D 四人从左到右排成一排。A 不在两端，B 在 A 左边，C 在 D 右边且相邻。四人的顺序是什么？", "golden": "B A D C", "keys": ["DC"]}
+{"id": "qa-hp018", "domain": "logic", "difficulty": "hardplus", "question": "已知「有些 A 是 B」且「所有 B 都是 C」，可以推出什么结论？", "golden": "有些 A 是 C", "keys": ["A", "C"]}
+{"id": "qa-hp019", "domain": "logic", "difficulty": "hardplus", "question": "设 p 为 x 大于 2，q 为 x 大于 1。p 是 q 的什么条件？", "golden": "充分不必要条件", "keys": ["充分", "不必要"]}
+{"id": "qa-hp020", "domain": "logic", "difficulty": "hardplus", "question": "某月有 5 个星期三，且这个月 1 号恰好是星期三，这个月至少有多少天？", "golden": "29 天", "keys": ["29"]}
+{"id": "qa-hp021", "domain": "logic", "difficulty": "hardplus", "question": "甲乙丙三人比赛，甲不是第一名，乙不是最后一名，丙排在甲后面。三人的名次顺序是什么？", "golden": "乙第一、甲第二、丙第三", "keys": ["乙", "甲", "丙"]}
+{"id": "qa-hp022", "domain": "logic", "difficulty": "hardplus", "question": "数列 2、5、10、17、26 的下一个数是多少？", "golden": "37", "keys": ["37"]}
+{"id": "qa-hp023", "domain": "logic", "difficulty": "hardplus", "question": "数列 1、3、7、15 的下一个数是多少？", "golden": "31", "keys": ["31"]}
+{"id": "qa-hp024", "domain": "logic", "difficulty": "hardplus", "question": "命题「如果明天不下雨，就去爬山」成立，且今天没去爬山，可以推出什么？", "golden": "明天下雨了", "keys": ["下雨"]}
+{"id": "qa-hp025", "domain": "logic", "difficulty": "hardplus", "question": "盒子里有一个球，要么红要么蓝。甲说「是红球」，乙说「是蓝球」，丙说「甲说得对」。只有一人说对，球是什么颜色？", "golden": "蓝球", "keys": ["蓝"]}
+{"id": "qa-hp026", "domain": "math", "difficulty": "hardplus", "question": "函数 f(x) 等于 x 的平方减 2x 加 3，它的最小值是多少？", "golden": "2", "keys": ["2"]}
+{"id": "qa-hp027", "domain": "math", "difficulty": "hardplus", "question": "函数 f(x) 等于 x 的立方减 3x，它的极值点 x 是多少？", "golden": "x 等于正负 1", "keys": ["1"]}
+{"id": "qa-hp028", "domain": "math", "difficulty": "hardplus", "question": "等差数列首项为 2、公差为 3，第 10 项是多少？", "golden": "29", "keys": ["29"]}
+{"id": "qa-hp029", "domain": "math", "difficulty": "hardplus", "question": "等比数列首项为 2、公比为 3，前 4 项的和是多少？", "golden": "80", "keys": ["80"]}
+{"id": "qa-hp030", "domain": "math", "difficulty": "hardplus", "question": "sin 平方 x 加 cos 平方 x 等于多少？", "golden": "1", "keys": ["1"]}
+{"id": "qa-hp031", "domain": "math", "difficulty": "hardplus", "question": "sin 30 度等于多少？", "golden": "1/2", "keys": ["1/2"]}
+{"id": "qa-hp032", "domain": "math", "difficulty": "hardplus", "question": "圆心为 (1,2)、半径为 3 的圆的方程是什么？", "golden": "(x-1)²+(y-2)²=9", "keys": ["9"]}
+{"id": "qa-hp033", "domain": "math", "difficulty": "hardplus", "question": "曲线 y 等于 x 的平方在 x 等于 1 处的切线斜率是多少？", "golden": "2", "keys": ["2"]}
+{"id": "qa-hp034", "domain": "math", "difficulty": "hardplus", "question": "不等式 x 的平方减 4 小于等于 0 的解集是什么？", "golden": "负 2 到 2 闭区间", "keys": ["2"]}
+{"id": "qa-hp035", "domain": "math", "difficulty": "hardplus", "question": "log 以 2 为底 8 的对数等于多少？", "golden": "3", "keys": ["3"]}
+{"id": "qa-hp036", "domain": "math", "difficulty": "hardplus", "question": "向量 (3,4) 的模长是多少？", "golden": "5", "keys": ["5"]}
+{"id": "qa-hp037", "domain": "math", "difficulty": "hardplus", "question": "同时掷两枚骰子，点数和为 7 的概率是多少？", "golden": "1/6", "keys": ["1/6"]}
+{"id": "qa-hp038", "domain": "math", "difficulty": "hardplus", "question": "4 个不同字母的全排列有多少种？", "golden": "24 种", "keys": ["24"]}
+{"id": "qa-hp039", "domain": "math", "difficulty": "hardplus", "question": "棱长为 2 的正方体的体积是多少？", "golden": "8", "keys": ["8"]}
+{"id": "qa-hp040", "domain": "math", "difficulty": "hardplus", "question": "无穷等比数列 1 加 1/2 加 1/4 加 1/8 一直加下去的和是多少？", "golden": "2", "keys": ["2"]}
+{"id": "qa-hp041", "domain": "gongwu", "difficulty": "hardplus", "question": "3 点到 4 点之间，时针和分针第一次重合大约在 3 点多少分？", "golden": "约 16.36 分", "keys": ["16.36"]}
+{"id": "qa-hp042", "domain": "gongwu", "difficulty": "hardplus", "question": "牧场青草匀速生长，10 头牛吃 20 天吃完，15 头牛吃 10 天吃完，25 头牛吃几天吃完？", "golden": "5 天", "keys": ["5"]}
+{"id": "qa-hp043", "domain": "gongwu", "difficulty": "hardplus", "question": "鸡兔共 100 只、脚共 280 只，鸡和兔各多少只？", "golden": "鸡 60 只、兔 40 只", "keys": ["60", "40"]}
+{"id": "qa-hp044", "domain": "gongwu", "difficulty": "hardplus", "question": "船在静水中速度 10 千米每小时，水流速度 2 千米每小时，顺水和逆水的速度分别是多少？", "golden": "顺水 12、逆水 8", "keys": ["12", "8"]}
+{"id": "qa-hp045", "domain": "gongwu", "difficulty": "hardplus", "question": "祖父、父亲、孙子三代人年龄和是 100 岁，祖父年龄是孙子的 6 倍，父亲是孙子的 3 倍，孙子几岁？", "golden": "10 岁", "keys": ["10"]}
+{"id": "qa-hp046", "domain": "gongwu", "difficulty": "hardplus", "question": "甲乙两车从相距 300 公里的两地相向而行，甲 60 公里每小时、乙 40 公里每小时，几小时后相遇？", "golden": "3 小时", "keys": ["3"]}
+{"id": "qa-hp047", "domain": "gongwu", "difficulty": "hardplus", "question": "一件工作甲单独做 6 天完成，甲做了 2 天后乙加入又做了 1.5 天完成，乙单独做需要几天？", "golden": "3.6 天", "keys": ["3.6"]}
+{"id": "qa-hp048", "domain": "gongwu", "difficulty": "hardplus", "question": "某商品按进价加价 25% 出售，后因滞销打 8 折，仍获利 100 元，进价是多少元？", "golden": "1000 元", "keys": ["1000"]}
+{"id": "qa-hp049", "domain": "gongwu", "difficulty": "hardplus", "question": "甲乙丙三人按 3:2:1 的比例出资 6 万元开店，甲出资多少万元？", "golden": "3 万元", "keys": ["3"]}
+{"id": "qa-hp050", "domain": "gongwu", "difficulty": "hardplus", "question": "一本书按原价打 9 折出售便宜了 6 元，原价是多少元？", "golden": "60 元", "keys": ["60"]}
