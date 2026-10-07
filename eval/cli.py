@@ -64,10 +64,12 @@ def run_agent(engine: str, question: str) -> str:
         url, data=data,
         headers={"Authorization": "Bearer " + key, "Content-Type": "application/json"},
     )
+    # gpt（4sapi.com）需走系统代理（直连超时）；deepseek/dashscope/4sapi.org 直连
+    opener = urllib.request.urlopen if engine == "gpt" else _NO_PROXY_OPENER.open
     last: Exception | None = None
     for _ in range(3):  # 重试 3 次，抗网络波动（RemoteDisconnected/URLError）
         try:
-            with _NO_PROXY_OPENER.open(req, timeout=120) as r:
+            with opener(req, timeout=120) as r:
                 resp = json.loads(r.read())
             return resp["choices"][0]["message"]["content"].strip()
         except Exception as exc:  # noqa: BLE001
