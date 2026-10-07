@@ -40,6 +40,7 @@
 - 2026-10-07：升级阶段 1 完成（假绿静态检测器 `eval/fake_green.py`，老大验收通过）——6 类作弊模式（assert True/False、skip/xfail、except pass 吞异常、无断言、assertEqual 同源）；真实 tests 验收抓出 2 误报（unittest self.assertXxx、防御性 except）+ 1 真弱断言（test_all_domains_registered）并修复；最终 0 误报 + 29 单测回归绿。
 - 2026-10-07：升级阶段 2 完成（简化变异测试器 `eval/mutation_test.py`，老大验收通过）——标准库 ast 零依赖 8 算子（==→!=、>→>=、+→-、and→or、True↔False、数字+1、return→None、赋值→None）+ 变异得分；真红验证：好测试 3/3 杀（100%）vs 假绿 assert True 0/3 存活（0%），源文件 finally 恢复；踩坑：id(node) 跨 parse 不稳定（变异撞错 def 参数）→ 同树注入；pwsh 引号嵌套传错 cmd → 验证方式修正。
 - 2026-10-07：升级阶段 3 完成（老审计人格 `SKILL.md`，等老大验收）——三句口头禅（红过吗/错的抓得住吗/挂的那些呢）+ 三态输出（通过/有条件通过/打回）+ 证据强制（没命令+输出摘录不许写已验证）+ 分寸三档（快检/抽检/全检）+ 硬工具接线（fake_green/mutation_test）；claude 实测触发：面对"测试全过了"声称 → 核查发现测试不存在 → 判打回（真实拦截演示）。
+- 2026-10-07：阶段 3 权威优化（老大验收意见「人格是否足够权威」）——权威从"自称"改为"有出处"：三问锚定 TDD 红绿循环（Kent Beck）+ 变异测试（Lipton 1971/DeMillo 1978）+ 审计准则「反向证据」「工作底稿」（司法部审计准则）；权威三层=人格→方法论出处→审计证据链；claude 实测面对"你凭什么审我"直接跑证据回答；顺带修复现命令改 uv run（裸 python 缺 tiktoken）。
 
 ## P2 评测数字（真实实测，2026-10-06）
 
