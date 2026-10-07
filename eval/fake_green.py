@@ -17,7 +17,6 @@ _CHEAT_PATTERNS = [
     ("assert_false", re.compile(r"assert\s+False\b"), "恒假断言（若被删除/绕过即假绿）"),
     ("skip", re.compile(r"(pytest\.mark\.skip|\.skip\s*\()"), "跳过测试"),
     ("xfail", re.compile(r"(pytest\.mark\.xfail|\.xfail\s*\()"), "预期失败——不算绿"),
-    ("except_pass", re.compile(r"except[^\n:]*:\s*pass\b"), "吞异常——错误被吃"),
 ]
 
 
@@ -28,6 +27,25 @@ def _test_functions(tree: ast.AST):
         if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and node.name.startswith("test"):
             out.append(node)
     return out
+
+
+def _call_name(node: ast.Call) -> str:
+    """调用节点的函数名（self.assertEqual → assertEqual；assertEqual → assertEqual）。"""
+    if isinstance(node.func, ast.Attribute):
+        return node.func.attr
+    if isinstance(node.func, ast.Name):
+        return node.func.id
+    return ""
+
+
+def _has_assert(fn: ast.AST) -> bool:
+    """测试函数是否有真断言：裸 assert 或 assertXxx 方法调用（unittest 风格）。"""
+    for node in ast.walk(fn):
+        if isinstance(node, ast.Assert):
+            return True
+        if isinstance(node, ast.Call) and _call_name(node).startswith("assert"):
+            return True
+    return False
 
 
 def scan_source(source: str, filename: str = "<src>") -> list[dict]:
@@ -42,11 +60,17 @@ def scan_source(source: str, filename: str = "<src>") -> list[dict]:
     except SyntaxError as exc:
         findings.append({"kind": "syntax_error", "line": exc.lineno or 0, "detail": f"语法错误：{exc.msg}"})
         return findings
-    # 没有 assert 的测试函数 = 空断言（跑了但不检查任何东西）
+    # 没有断言（裸 assert 或 self.assertXxx 都没有）= 空断言（跑了但不检查任何东西）
     for fn in _test_functions(tree):
-        has_assert = any(isinstance(n, ast.Assert) for n in ast.walk(fn))
-        if not has_assert:
+        if not _has_assert(fn):
             findings.append({"kind": "no_assert", "line": fn.lineno, "detail": f"测试函数 {fn.name} 没有任何 assert"})
+    # 测试函数内吞异常（except: pass 纯 pass 才算；模块级防御性 except 不算）
+    for fn in _test_functions(tree):
+        for node in ast.walk(fn):
+            if isinstance(node, ast.Try):
+                for handler in node.handlers:
+                    if handler.body and all(isinstance(st, ast.Pass) for st in handler.body):
+                        findings.append({"kind": "except_pass", "line": handler.lineno, "detail": "测试内吞异常——错误被吃"})
     # assertEqual(x, x) 左右同源恒真（AST 结构比对，覆盖裸调用与 self. 两种形态）
     for node in ast.walk(tree):
         if isinstance(node, ast.Call):
