@@ -45,6 +45,7 @@
 - 2026-10-07：陷阱集 v2（老大拍「做 v2」）+ 四组对照真区分——v2 陷阱=「测试只覆盖一个分支/路径，未覆盖分支变异存活」；关键发现：deepseek 本身就会审计（组1-3 全 0%），换 qwen 弱模型才分出差别：qwen 组1 100% 轻信 vs 组2 认真检查 30% vs 组3 老审计 0% vs 组4 工具链 40%；归因结论：价值主要来自方法论三问（100%→0%），工具链价值=确定性证据而非独立判定（40% 盲区：硬编码期望+变异点落在被测路径）；顺带修 mutation_test 深坑：NodeTransformer 原地改树污染后续变异体 → 改「位置定位+每次新树」。
 - 2026-10-07：升级阶段 5 完成（假绿灯档案 + README 重构，老大验收通过，「拦截假绿」升级收口）——`docs/fake-green-archive.md` 6 篇真实案例（LLM 复核洗白/max_tokens 截断/IE 死代理/keys 违规/真弱断言/出题错误），每篇四件事（原来为何通过/漏了什么/什么暴露/怎么修）+ 总教训（假绿五形态）；README 按「拦截假绿」重构：第一屏假绿灯演示 + 三问出处 + 硬工具 + 四组对照数据 + 诚实盲区；**5 阶段全部完成**。
 - 2026-10-07：对外物料更新（定位从省 token 变拦截假绿）——2 个 awesome PR 的 README 行已改成「fake-green interceptor」新描述（亲验 patch 确认）；PR 标题还是旧的（travisvn #1302「Add xizi-rujin skill to README」/ VoltAgent #1164「Chinese token compression」）待老大改；repo About 描述待改；仓库名拍「暂不改」（惜字如金=对每个字较真的新诠释还搭得上，GitHub rename 有 301 重定向以后可改）。
+- 2026-10-07：对外物料全部更新完成（亲验四样）——PR 标题 ×2 改「Add xizi-rujin — fake-green interceptor skill (老审计)」✓、repo About 改「老审计·拦截假绿」✓、qlheric Profile README 改「专治一种病：AI 说成功了其实没有」✓、PR README 行 ✓；仓库名暂不改（老大默认）。
 
 ## P2 评测数字（真实实测，2026-10-06）
 
