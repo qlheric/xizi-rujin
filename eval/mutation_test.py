@@ -1,7 +1,7 @@
 """F: 简化变异测试器——AST 变异 + 跑测试 + 变异得分（低分=假绿）
 R: code:eval/fake_green.py（同 AST 思路）；SKILL 与 bench 组 4 共用 PASS_THRESHOLD
 A: python -m eval.mutation_test <source.py> --cmd "<测试命令>"
-S: 基线不绿则无法判定；超时算被杀；字节码缓存不得串味；通过线只有 PASS_THRESHOLD 一处
+S: 基线不绿则无法判定；超时算被杀；字节码缓存不得串味；通过线只有 PASS_THRESHOLD 一处；新算子见 _CMP_SWAPS / _BIN_SWAPS
 """
 
 from __future__ import annotations
@@ -53,41 +53,110 @@ def _conclusion(report: MutationReport, threshold: float) -> str:
     )
 
 
+# 比较符只换相邻的那一个，外加 == → >=（偶数只测一边时，>= 0 会整段变真）。
+_CMP_SWAPS: tuple[tuple[type[ast.cmpop], type[ast.cmpop], str], ...] = (
+    (ast.Eq, ast.NotEq, "== → !="),
+    (ast.Eq, ast.GtE, "== → >="),
+    (ast.NotEq, ast.Eq, "!= → =="),
+    (ast.Gt, ast.GtE, "> → >="),
+    (ast.GtE, ast.Gt, ">= → >"),
+    (ast.Lt, ast.LtE, "< → <="),
+    (ast.LtE, ast.Lt, "<= → <"),
+)
+# 真除同时换成乘和地板除。只测能整除的点会杀掉「/ → *」，但杀不掉「/ → //」。
+_BIN_SWAPS: tuple[tuple[type[ast.operator], type[ast.operator], str], ...] = (
+    (ast.Add, ast.Sub, "+ → -"),
+    (ast.Sub, ast.Add, "- → +"),
+    (ast.Mult, ast.Div, "* → /"),
+    (ast.Div, ast.Mult, "/ → *"),
+    (ast.Div, ast.FloorDiv, "/ → //"),
+    (ast.FloorDiv, ast.Div, "// → /"),
+)
+
+
+def _cmp_with(node: ast.Compare, index: int, new_op: ast.cmpop) -> ast.Compare:
+    ops = list(node.ops)
+    ops[index] = new_op
+    return ast.Compare(left=node.left, ops=ops, comparators=list(node.comparators))
+
+
 def _mutate_node(node: ast.AST) -> list[tuple[ast.AST, str]]:
-    """对一个 AST 节点生成变异体列表 [(变异体AST, 描述)]。核心 8 算子。"""
+    """对一个 AST 节点生成变异体。顺序固定，方便复现。"""
     out: list[tuple[ast.AST, str]] = []
     if isinstance(node, ast.Compare):
         for i, op in enumerate(node.ops):
-            new = None
-            if isinstance(op, ast.Eq):
-                new = ast.NotEq()
-            elif isinstance(op, ast.Gt):
-                new = ast.GtE()
-            if new is not None:
-                ops = list(node.ops)
-                ops[i] = new
-                out.append((ast.Compare(left=node.left, ops=ops, comparators=node.comparators),
-                            f"line {node.lineno} 比较符 {ast.dump(op)}→{ast.dump(new)}"))
-    elif isinstance(node, ast.BinOp) and isinstance(node.op, ast.Add):
-        out.append((ast.BinOp(left=node.left, op=ast.Sub(), right=node.right),
-                    f"line {node.lineno} + → -"))
-    elif isinstance(node, ast.BoolOp) and isinstance(node.op, ast.And):
-        out.append((ast.BoolOp(op=ast.Or(), values=node.values),
-                    f"line {node.lineno} and → or"))
+            for old_t, new_t, label in _CMP_SWAPS:
+                if isinstance(op, old_t):
+                    out.append((
+                        _cmp_with(node, i, new_t()),
+                        f"line {node.lineno} 比较符 {label}",
+                    ))
+    elif isinstance(node, ast.BinOp):
+        for old_t, new_t, label in _BIN_SWAPS:
+            if isinstance(node.op, old_t):
+                out.append((
+                    ast.BinOp(left=node.left, op=new_t(), right=node.right),
+                    f"line {node.lineno} {label}",
+                ))
+    elif isinstance(node, ast.BoolOp):
+        if isinstance(node.op, ast.And):
+            out.append((ast.BoolOp(op=ast.Or(), values=list(node.values)),
+                        f"line {node.lineno} and → or"))
+        elif isinstance(node.op, ast.Or):
+            out.append((ast.BoolOp(op=ast.And(), values=list(node.values)),
+                        f"line {node.lineno} or → and"))
     elif isinstance(node, ast.Constant):
         if node.value is True:
             out.append((ast.Constant(value=False), f"line {node.lineno} True → False"))
         elif node.value is False:
             out.append((ast.Constant(value=True), f"line {node.lineno} False → True"))
-        elif isinstance(node.value, (int, float)) and node.value != 0:
-            out.append((ast.Constant(value=node.value + 1), f"line {node.lineno} 数字 {node.value} → {node.value + 1}"))
+        elif isinstance(node.value, str):
+            out.append((ast.Constant(value=node.value + "XX"),
+                        f"line {node.lineno} 字符串追加 XX"))
+        elif isinstance(node.value, (int, float)) and not isinstance(node.value, bool) and node.value != 0:
+            out.append((ast.Constant(value=node.value + 1),
+                        f"line {node.lineno} 数字 {node.value} → {node.value + 1}"))
     elif isinstance(node, ast.Return) and node.value is not None:
         out.append((ast.Return(value=ast.Constant(value=None)),
                     f"line {node.lineno} return x → return None"))
+        # 只对比较 / 布尔表达式加 return True。数值函数上这是必杀，会把窄测试的得分抬过 80%。
+        if isinstance(node.value, (ast.Compare, ast.BoolOp)):
+            out.append((ast.Return(value=ast.Constant(value=True)),
+                        f"line {node.lineno} return 比较/布尔 → return True"))
     elif isinstance(node, ast.Assign) and not isinstance(node.value, (ast.Constant, ast.Name)):
         out.append((ast.Assign(targets=node.targets, value=ast.Constant(value=None)),
                     f"line {node.lineno} 赋值 → None"))
+    elif (
+        isinstance(node, ast.Call)
+        and isinstance(node.func, ast.Attribute)
+        and not node.args
+        and not node.keywords
+    ):
+        out.append((node.func.value, f"line {node.lineno} 去掉调用 .{node.func.attr}()"))
+    elif isinstance(node, ast.IfExp) and isinstance(node.orelse, ast.Name):
+        # 不在这里把条件取反。v2_09 现为 3/4=75%，再加一个必杀变异会变成 4/5=80% 被放行。
+        out.append((
+            ast.IfExp(test=node.test, body=node.body, orelse=ast.Constant(value=None)),
+            f"line {node.lineno} else {node.orelse.id} → None",
+        ))
     return out
+
+
+def _docstring_ids(tree: ast.AST) -> set[int]:
+    """模块和函数开头的文档字符串。改它测试通常看不见，算等价变异，不生成。"""
+    found: set[int] = set()
+    for node in ast.walk(tree):
+        body = getattr(node, "body", None)
+        if not isinstance(body, list) or not body:
+            continue
+        first = body[0]
+        if (
+            isinstance(first, ast.Expr)
+            and isinstance(first.value, ast.Constant)
+            and isinstance(first.value.value, str)
+        ):
+            found.add(id(first.value))
+    return found
 
 
 def generate_mutants(source: str) -> list[tuple[str, str]]:
@@ -98,8 +167,11 @@ def generate_mutants(source: str) -> list[tuple[str, str]]:
     正解：「行号+列号+类型」定位（跨树稳定）+ 每个变异体用**新 parse 的树**注入。
     """
     base = ast.parse(source)
+    skip_doc = _docstring_ids(base)
     spots: list[tuple[tuple[int, int, str], ast.AST, str]] = []
     for node in ast.walk(base):
+        if id(node) in skip_doc:
+            continue
         for m, desc in _mutate_node(node):
             key = (getattr(node, "lineno", 0), getattr(node, "col_offset", 0), type(node).__name__)
             spots.append((key, m, desc))
@@ -111,6 +183,8 @@ def generate_mutants(source: str) -> list[tuple[str, str]]:
             mutated = ast.unparse(injector.visit(tree))
         except Exception:
             continue  # 变异产生非法语法则跳过该变异体
+        if mutated == ast.unparse(ast.parse(source)):
+            continue  # 换完和原文一样，是空变异
         mutants.append((mutated, desc))
         if len(mutants) >= MUTANT_LIMIT:
             break
