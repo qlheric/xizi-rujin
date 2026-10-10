@@ -1,0 +1,20 @@
+name: xizi-audit-example
+
+# 示例，不在本仓库的 pull_request 上自动跑。
+# 复制到自己的仓库后，把 on 改成 pull_request 即可。
+on:
+  workflow_dispatch:
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: ./.github/actions/xizi-audit
+        with:
+          base: origin/main

@@ -66,7 +66,42 @@ $ python -m eval.mutation_test demo_math.py --cmd "python test.py"
 | Codex（`codex` 在 PATH 上） | `~/.codex/skills/xizi-rujin/` |
 | opencode | `${OPENCODE_CONFIG:-~/.config/opencode}/skills/xizi-rujin/` |
 
-装完重启 harness。声称「测试全过 / 已验证」时，老审计跑的是技能目录里的入口，不是用户项目里的 `python -m eval`：
+装完重启 harness。声称「测试全过 / 已验证」时，老审计跑的是技能目录里的入口，不是用户项目里的 `python -m eval`。
+
+要让「声称通过」过不了关，而不是只靠模型自己想起审计，加 `--hook`。它把 Stop 钩子合并进现有配置，不覆盖别的键；再跑一次会跳过已经登记过的条目。卸掉只删我们的条目：
+
+```bash
+bash install.sh --hook project          # 当前目录 .claude/settings.json 和 .codex/hooks.json
+bash install.sh --hook user             # ~/.claude/settings.json 和 ~/.codex/hooks.json
+python xizi_rujin.py uninstall-hook --scope project --harness both
+```
+
+Windows（PowerShell，不依赖 Git Bash）：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\install.ps1 -Hook project
+```
+
+钩子写的是 exec 形式：`command` 是当前 `python` 的绝对路径，`args` 把 `hook-stop` 分开传，Windows 上不会去跑 `.cmd` 垫片。Claude Code 的说明见 [hooks](https://code.claude.com/docs/en/hooks) 和 [hooks guide](https://code.claude.com/docs/en/hooks-guide)。Codex 同样有 Stop，说明见 [Codex hooks](https://developers.openai.com/codex/hooks)；项目级钩子要在 `/hooks` 里信任之后才会跑。两边都不支持的时候，审查者手动跑：
+
+```bash
+python xizi_rujin.py audit --changed
+```
+
+GitHub 上可选，不进本仓库的必跑检查。把 `.github/workflows/xizi-audit.example.yml` 抄进自己的仓库，或直接用 `.github/actions/xizi-audit`。打回退出码 1，无法判定退出码 2，结论写在 job summary。
+
+| 结论 | Stop 钩子 | `audit --changed` |
+|---|---|---|
+| 通过 | 静默放行 | 退出码 0 |
+| 没有相关的 Python 改动 | 静默放行，不跑变异 | 退出码 0 |
+| 打回 | `{"decision":"block","reason":"..."}`，退出码 0 | 退出码 1 |
+| 无法判定（没测试、基线是红的、命令错） | 同样拦住，理由里写无法判定 | 退出码 2 |
+| 钩子自己崩了、git 不可用 | 放行，`systemMessage` 里写明 | 退出码 2 |
+| `stop_hook_active: true`，或同一会话已拦住 3 次 | 放行，避免死循环 | — |
+
+拦截次数记在系统临时目录（或 `XIZI_STOP_HOOK_STATE_DIR`），不写进工作区。Claude Code 自己还有连续 8 次拦住的上限。
+
+技能目录里的三条命令：
 
 ```bash
 python "$SKILL_DIR/xizi_rujin.py" scan <测试文件或目录>
@@ -87,6 +122,7 @@ uvx --from git+https://github.com/qlheric/xizi-rujin xizi-rujin mutate <源文�
 python -m eval.fake_green tests              # 静态扫作弊模式
 python -m eval.mutation_test <src> --cmd "<测试命令>"   # 变异测假绿
 python xizi_rujin.py audit --source <src> --cmd "<测试命令>" <测试文件或目录>
+python -m xizi_rujin audit --changed          # 只审工作区里改过的 Python
 python -m eval.bench --dir eval/traps_v2 --llm --engine qwen   # 四组对照（要自己的 LLM key）
 ```
 

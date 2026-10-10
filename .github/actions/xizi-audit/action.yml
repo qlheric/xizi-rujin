@@ -1,0 +1,26 @@
+name: 惜字如金审计
+description: 对这次改动做假绿审计。打回或无法判定时让作业失败，并把结论写进 job summary。
+inputs:
+  base:
+    description: 对比的 git ref，例如 origin/main。留空则看工作区相对 HEAD 的改动。
+    required: false
+    default: ""
+  timeout:
+    description: 单条测试命令的超时秒数。
+    required: false
+    default: "60"
+runs:
+  using: composite
+  steps:
+    - name: 假绿审计
+      shell: bash
+      env:
+        XIZI_AUDIT_BASE: ${{ inputs.base }}
+        XIZI_AUDIT_TIMEOUT: ${{ inputs.timeout }}
+      run: |
+        set -euo pipefail
+        args=(audit --changed --timeout "${XIZI_AUDIT_TIMEOUT}")
+        if [ -n "${XIZI_AUDIT_BASE}" ]; then
+          args+=(--base "${XIZI_AUDIT_BASE}")
+        fi
+        python -m xizi_rujin "${args[@]}"

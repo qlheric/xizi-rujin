@@ -159,19 +159,49 @@ def _docstring_ids(tree: ast.AST) -> set[int]:
     return found
 
 
-def generate_mutants(source: str) -> list[tuple[str, str]]:
+def _spans_touching(tree: ast.AST, only_lines: set[int]) -> list[tuple[int, int]]:
+    """改动行落在哪些函数里。命中的函数整段都变异，而不是只改那一行。"""
+    spans: list[tuple[int, int]] = []
+    for node in ast.walk(tree):
+        if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            continue
+        end = getattr(node, "end_lineno", None) or node.lineno
+        if any(node.lineno <= line <= end for line in only_lines):
+            spans.append((node.lineno, end))
+    return spans
+
+
+def _line_in_scope(lineno: int, spans: list[tuple[int, int]], only_lines: set[int]) -> bool:
+    for start, end in spans:
+        if start <= lineno <= end:
+            return True
+    return lineno in only_lines
+
+
+def generate_mutants(
+    source: str,
+    only_lines: set[int] | None = None,
+) -> list[tuple[str, str]]:
     """生成变异体列表 [(变异后源码, 描述)]。
 
     两坑都踩过：①id(node) 跨 parse 不稳定（变异撞错节点）②NodeTransformer 原地改树，
     第一个变异体注入后树被改（Constant 被替换掉），后续变异体找不到目标。
     正解：「行号+列号+类型」定位（跨树稳定）+ 每个变异体用**新 parse 的树**注入。
+
+    only_lines 给出本次改动的行号时，只变异这些行所在的函数（以及落在这些行上的模块级节点）。
+    不传则整份文件都变异，旧调用保持原样。
     """
     base = ast.parse(source)
     skip_doc = _docstring_ids(base)
+    spans = _spans_touching(base, only_lines) if only_lines is not None else []
     spots: list[tuple[tuple[int, int, str], ast.AST, str]] = []
     for node in ast.walk(base):
         if id(node) in skip_doc:
             continue
+        if only_lines is not None:
+            lineno = getattr(node, "lineno", 0) or 0
+            if not _line_in_scope(lineno, spans, only_lines):
+                continue
         for m, desc in _mutate_node(node):
             key = (getattr(node, "lineno", 0), getattr(node, "col_offset", 0), type(node).__name__)
             spots.append((key, m, desc))
@@ -263,6 +293,7 @@ def run_mutation(
     test_cmd: str,
     timeout: float = DEFAULT_TIMEOUT,
     threshold: float | None = None,
+    only_lines: set[int] | None = None,
 ) -> MutationReport:
     """变异 → 跑测试 → 结论。基线不绿、没有变异点，都不给「通过」。"""
     if threshold is None:
@@ -284,7 +315,7 @@ def run_mutation(
                 f"基线测试没有通过（退出码 {code}）。测试本来就是红的，或者命令写错，变异得分不能当成通过。",
             ), threshold)
 
-        mutants = generate_mutants(original)
+        mutants = generate_mutants(original, only_lines=only_lines)
         if not mutants:
             return _finish(MutationReport(
                 "无法判定", None, 0, 0,

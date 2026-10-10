@@ -21,3 +21,13 @@ jobs:
         run: |
           python -m eval.bench
           python -m eval.bench --dir eval/traps_v2
+
+  stop-hook-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Stop hook tests
+        run: python -m unittest tests.test_stop_hook -v

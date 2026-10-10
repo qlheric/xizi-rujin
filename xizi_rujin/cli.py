@@ -13,10 +13,16 @@ USAGE = """\
   xizi-rujin scan <测试文件或目录>
   xizi-rujin mutate <源文件.py> --cmd "<测试命令>"
   xizi-rujin audit --source <源文件.py> --cmd "<测试命令>" <测试文件或目录>
+  xizi-rujin audit --changed [--base <ref>]
+  xizi-rujin hook-stop
+  xizi-rujin install-hook --scope project|user [--harness claude|codex|both]
+  xizi-rujin uninstall-hook --scope project|user [--harness claude|codex|both]
 
 scan    静态扫疑似假绿。没有扫到测试文件时输出「无法判定」，退出码 2。
 mutate  变异测试。通过 / 打回 / 无法判定，退出码 0 / 1 / 2。
 audit   先 scan 再 mutate。扫到疑似假绿时，变异得分过线也不能单独算通过。
+        --changed 只看这次的 Python 改动（工作区，或 --base 的三点 diff）。
+hook-stop  读 Stop 钩子的 JSON。打回和无法判定都拦住；通过和无改动不输出。
 """
 
 _STATIC_OVERRIDES_PASS = "结论：打回——静态扫描发现疑似假绿，变异得分不能单独算通过。"
@@ -84,6 +90,22 @@ def main(argv: list[str] | None = None) -> int:
 
         return mutate_main(rest)
     if cmd == "audit":
+        if "--changed" in rest:
+            from xizi_rujin.audit_changed import main as changed_main
+
+            return changed_main(rest)
         return cmd_audit(rest)
+    if cmd == "hook-stop":
+        from xizi_rujin.stop_hook import main as hook_main
+
+        return hook_main(rest)
+    if cmd == "install-hook":
+        from xizi_rujin.install_hook import main as install_main
+
+        return install_main(rest)
+    if cmd == "uninstall-hook":
+        from xizi_rujin.install_hook import main as install_main
+
+        return install_main(rest, remove=True)
     print(f"未知子命令：{cmd}\n{USAGE}", end="")
     return 2
