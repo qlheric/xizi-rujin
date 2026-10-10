@@ -24,14 +24,15 @@ assert True
 
 ```
 $ uv run python -m eval.mutation_test demo_math.py --cmd "python test.py"
-  变异体 1 [line 2 return x → return None]: 存活——假绿！✗
-  变异体 2 [line 2 + → -]:                存活——假绿！✗
-  变异得分：0/2（0%）
+  变异体  1 [line 2 return x → return None]: 存活——假绿！✗
+  变异体  2 [line 2 + → -]: 存活——假绿！✗
+
+变异得分：0/2（0%）——通过阈值 80%；被杀=测试真能抓 bug；存活=假绿
 
 结论：打回——测试抓不住任何 bug，这个「通过」不算数。
 ```
 
-同模块换成真断言（`assert add(1,2) == 3`）→ 变异得分 100%，爽快签字。
+同模块换成真断言（`assert add(1,2) == 3`）→ 变异得分 100%，工具打印「结论：通过——变异得分 100% 达到通过阈值 80%。」
 
 ---
 
@@ -47,8 +48,8 @@ $ uv run python -m eval.mutation_test demo_math.py --cmd "python test.py"
 
 | 工具 | 干什么 |
 |---|---|
-| `fake_green.py` | 静态扫 6 类作弊模式（assert True / skip / xfail / 吞异常 / 无断言 / 同源断言） |
-| `mutation_test.py` | 变异 8 算子 + 变异得分——低分=测试抓不住 bug=假绿 |
+| `fake_green.py` | AST 静态扫：恒真 / 跳过 / xfail / 吞异常 / 无断言 / 同源，以及真值断言、恒真比较、不可达断言、mock 被测对象。目录认 `test*.py` 和 `*_test.py`；一个测试文件都没扫到是「无法判定」 |
+| `mutation_test.py` | 变异 8 算子 + 变异得分。通过线只有 `PASS_THRESHOLD`（80%），CLI 退出码和 bench 组 4 共用；基线不绿输出「无法判定」 |
 | `bench.py` | 假绿陷阱集 + 四组对照（错误放行率） |
 
 **人格入口**：`SKILL.md`（老审计）——触发、引导、三态结论（通过 / 有条件通过 / 打回），证据强制：没命令+输出摘录不许写"已验证"。

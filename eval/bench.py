@@ -8,12 +8,11 @@ from __future__ import annotations
 
 import argparse
 import os
-import subprocess
 import sys
 
 from .cli import run_agent
 from .fake_green import scan_path
-from .mutation_test import run_mutation
+from .mutation_test import PASS_THRESHOLD, run_mutation
 
 TRAPS_DIR = os.path.join(os.path.dirname(__file__), "traps")
 
@@ -29,18 +28,23 @@ def load_traps(traps_dir: str = TRAPS_DIR) -> list[tuple[str, str, str]]:
 
 
 def group4_tool(base: str, src: str, test: str) -> tuple[bool, str]:
-    """组 4：确定性工具链。返回 (是否放行, 理由)。"""
+    """组 4：确定性工具链。返回 (是否放行, 理由)。
+
+    放行与否跟 CLI 用同一条 PASS_THRESHOLD，不再另外要求 100%。
+    基线不绿、超时，都由 run_mutation 给出结论，这里不再自己裸跑一遍。
+    """
     findings = scan_path(test)
     if findings:
         kinds = ", ".join(sorted({f["kind"] for f in findings}))
         return False, f"fake_green 抓 {len(findings)} 处 [{kinds}]"
-    # 原测试能跑才做变异测试（pytest/unittest 语法裸跑会 NameError，跳过）
-    probe = subprocess.run(f'python "{test}"', shell=True, capture_output=True, timeout=30)
-    if probe.returncode != 0:
-        return False, f"测试裸跑失败 rc={probe.returncode}"
-    score = run_mutation(src, f'python "{test}"')
-    if score < 1.0:
-        return False, f"变异得分 {score:.0%}（有变异体存活）"
+    report = run_mutation(src, f'"{sys.executable}" "{test}"')
+    if report.verdict == "无法判定":
+        return False, f"无法判定：{report.reason}"
+    if report.verdict != "通过":
+        shown = "无" if report.score is None else f"{report.score:.0%}"
+        return False, f"变异得分 {shown}（低于通过阈值 {PASS_THRESHOLD:.0%}）"
+    if report.score is not None and report.score < 1.0:
+        return True, f"变异得分 {report.score:.0%} 达到通过阈值 {PASS_THRESHOLD:.0%}，按同一条线放行"
     return True, "工具链未抓出（已知局限：硬编码错误期望可能漏）"
 
 
