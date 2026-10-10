@@ -49,6 +49,33 @@ python "$SKILL_DIR/xizi_rujin.py" mutate <源文件.py> --cmd "<测试命令>"
 python "$SKILL_DIR/xizi_rujin.py" audit --source <源文件.py> --cmd "<测试命令>" <测试文件或目录>
 ```
 
+交付前如果只能看「这次改了什么」，用同一入口：
+
+```bash
+python "$SKILL_DIR/xizi_rujin.py" audit --changed
+```
+
+通过退出码 0，打回退出码 1，无法判定退出码 2。没有相关 Python 改动也是通过，并且不会去跑变异。
+
+## 停下来之前（钩子，可选）
+
+说服靠你自己记得跑。拦住靠 Stop 钩子：Claude Code 或 Codex 要结束这一轮时，钩子只审这次改过的 Python（相对 HEAD 的已暂存、未暂存、未跟踪；变异只打到改动所在的函数）。
+
+- **通过**，或没有相关改动：不说话，让它停。
+- **打回**，或**无法判定**（没测试、基线是红的）：`{"decision":"block","reason":"..."}`，退出码 0。理由是中文，让它继续改。
+- 输入里 `stop_hook_active` 为 true，或这个会话已经被拦住 3 次：放行，避免死循环。
+- 钩子自己崩了：放行，并用 `systemMessage` 告诉用户。不要把会话卡死。
+- `background_tasks` 非空：这一轮还没真停，放行。
+
+登记（不覆盖已有配置）：
+
+```bash
+bash install.sh --hook project
+bash install.sh --hook user
+```
+
+Windows 用 `install.ps1 -Hook project`。Codex 的项目级钩子要在 `/hooks` 里信任后才会执行。钩子没装上时，审查者把 `audit --changed` 的输出贴进验收。GitHub 可选动作在 `.github/actions/xizi-audit`，示例工作流是 `.github/workflows/xizi-audit.example.yml`，默认不绑定本仓库的 pull request。
+
 ## 审计流程（快检，默认档）
 
 1. **静态扫**：`python "$SKILL_DIR/xizi_rujin.py" scan <测试文件或目录>`。目录同时认 `test*.py` 和 `*_test.py`；一个测试文件都没扫到，工具输出「无法判定」并返回非 0，不许当成清洁通过。判断走 AST（注释和字符串里的 `assert True` 不算）。

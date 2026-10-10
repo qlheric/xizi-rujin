@@ -32,3 +32,21 @@ Copy-Item eval\__init__.py, eval\fake_green.py, eval\mutation_test.py "$dest\eva
 ## 触发
 
 重启 Claude Code。技能名是 `xizi-rujin`。当对话里出现「完成 / 通过 / 全绿 / 已验证」时，老审计用技能目录里的 `xizi_rujin.py` 核对，不要求用户项目安装任何包。
+
+## Stop 钩子（可选）
+
+技能只是说服。要在 Claude 结束这一轮时拦住假绿：
+
+```bash
+bash install.sh --hook project
+```
+
+`project` 写入当前目录的 `.claude/settings.json`，`user` 写入 `~/.claude/settings.json`。已有的 permissions、别的事件、别的命令都保留。同一条 `hook-stop` 再装一次不会重复。卸掉：
+
+```bash
+python xizi_rujin.py uninstall-hook --scope project --harness claude
+```
+
+Windows 用 `install.ps1 -Hook project`。钩子是 exec 形式，`command` 为 `python.exe` 的绝对路径。官方字段（stdin JSON、`stop_hook_active`、`decision: block`、超时）以 [hooks 参考](https://code.claude.com/docs/en/hooks) 为准。
+
+打回和无法判定都会拦住，并把中文理由交回去。通过、没有 Python 改动、`stop_hook_active: true`、同一会话已拦住 3 次、钩子自身出错，都放行。出错时用 `systemMessage` 说明，不把会话卡死。
