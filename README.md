@@ -23,7 +23,7 @@ assert True
 **老审计上工**（确定性工具，零 LLM）：
 
 ```
-$ uv run python -m eval.mutation_test demo_math.py --cmd "python test.py"
+$ python -m eval.mutation_test demo_math.py --cmd "python test.py"
   变异体  1 [line 2 return x → return None]: 存活——假绿！✗
   变异体  2 [line 2 + → -]: 存活——假绿！✗
 
@@ -52,17 +52,42 @@ $ uv run python -m eval.mutation_test demo_math.py --cmd "python test.py"
 | `mutation_test.py` | 变异 8 算子 + 变异得分。通过线只有 `PASS_THRESHOLD`（80%），CLI 退出码和 bench 组 4 共用；基线不绿输出「无法判定」 |
 | `bench.py` | 假绿陷阱集 + 四组对照（错误放行率） |
 
-**人格入口**：`SKILL.md`（老审计）——触发、引导、三态结论（通过 / 有条件通过 / 打回），证据强制：没命令+输出摘录不许写"已验证"。
+**人格入口**：`SKILL.md`（显示名老审计，技能名 `xizi-rujin`）——触发、引导、三态结论（通过 / 有条件通过 / 打回），证据强制：没命令+输出摘录不许写"已验证"。
 
 ---
 
-## 用法
+## 安装
+
+国内网络下优先用离线包：`bash install.sh` 把 `SKILL.md` 和工具链一起拷进本机 harness，不访问 PyPI。检测到哪个命令就装到哪：
+
+| harness | 目录 |
+|---|---|
+| Claude Code（`claude` 在 PATH 上） | `~/.claude/skills/xizi-rujin/` |
+| Codex（`codex` 在 PATH 上） | `~/.codex/skills/xizi-rujin/` |
+| opencode | `${OPENCODE_CONFIG:-~/.config/opencode}/skills/xizi-rujin/` |
+
+装完重启 harness。声称「测试全过 / 已验证」时，老审计跑的是技能目录里的入口，不是用户项目里的 `python -m eval`：
 
 ```bash
-uv sync
-uv run python -m eval.fake_green tests              # 静态扫作弊模式
-uv run python -m eval.mutation_test <src> --cmd "<测试命令>"   # 变异测假绿
-uv run python -m eval.bench --dir eval/traps_v2 --llm --engine qwen   # 四组对照
+python "$SKILL_DIR/xizi_rujin.py" scan <测试文件或目录>
+python "$SKILL_DIR/xizi_rujin.py" mutate <源文件.py> --cmd "<测试命令>"
+python "$SKILL_DIR/xizi_rujin.py" audit --source <源文件.py> --cmd "<测试命令>" <测试文件或目录>
+```
+
+仓库开发，或本机有 `uv`、能访问 GitHub 时，也可以不装技能、直接跑控制台入口（仍不需要发到 PyPI）：
+
+```bash
+uvx --from git+https://github.com/qlheric/xizi-rujin xizi-rujin scan <测试文件或目录>
+uvx --from git+https://github.com/qlheric/xizi-rujin xizi-rujin mutate <源文件.py> --cmd "<测试命令>"
+```
+
+## 用法（在本仓库里）
+
+```bash
+python -m eval.fake_green tests              # 静态扫作弊模式
+python -m eval.mutation_test <src> --cmd "<测试命令>"   # 变异测假绿
+python xizi_rujin.py audit --source <src> --cmd "<测试命令>" <测试文件或目录>
+python -m eval.bench --dir eval/traps_v2 --llm --engine qwen   # 四组对照（要自己的 LLM key）
 ```
 
 ---
