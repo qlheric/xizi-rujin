@@ -1,17 +1,56 @@
-"""F: 简化变异测试器——AST 变异 + 跑测试 + 变异得分（低分=假绿，阶段 2 硬工具）
-R: code:eval/fake_green.py（同 AST 思路）；阶段 3 SKILL 调用本模块
+"""F: 简化变异测试器——AST 变异 + 跑测试 + 变异得分（低分=假绿）
+R: code:eval/fake_green.py（同 AST 思路）；SKILL 与 bench 组 4 共用 PASS_THRESHOLD
 A: python -m eval.mutation_test <source.py> --cmd "<测试命令>"
-S: 变异用标准库 ast（零外部依赖，替代 mutmut 的 libcst）；「替换源文件→跑测试→恢复」必须 finally 保证恢复；变异得分=被杀/总数
+S: 基线不绿则无法判定；超时算被杀；字节码缓存不得串味；通过线只有 PASS_THRESHOLD 一处
 """
 
 from __future__ import annotations
 
 import argparse
 import ast
+import os
+import shutil
 import subprocess
 import sys
+import tempfile
+from dataclasses import dataclass
 
+# 唯一通过线。SKILL 的「≥80%」、CLI 退出码、bench 组 4 的放行都读这里，禁止再各写各的。
+PASS_THRESHOLD = 0.8
 MUTANT_LIMIT = 30  # 最小实现：单文件最多变异体数（控制耗时）
+DEFAULT_TIMEOUT = 60
+
+
+@dataclass
+class MutationReport:
+    """一次变异测试的结论。score 为 None 表示没法打分（无法判定）。"""
+
+    verdict: str  # 通过 / 打回 / 无法判定
+    score: float | None
+    killed: int
+    total: int
+    reason: str
+
+
+def verdict_from_score(score: float, threshold: float = PASS_THRESHOLD) -> str:
+    """得分达到阈值才是「通过」，否则「打回」。"""
+    if score >= threshold:
+        return "通过"
+    return "打回"
+
+
+def _conclusion(report: MutationReport, threshold: float) -> str:
+    """给人看的结论行。0 分那句与 README 演示保持同一句。"""
+    if report.verdict == "无法判定":
+        return f"结论：无法判定——{report.reason}"
+    if report.verdict == "通过":
+        return f"结论：通过——变异得分 {report.score:.0%} 达到通过阈值 {threshold:.0%}。"
+    if report.killed == 0:
+        return "结论：打回——测试抓不住任何 bug，这个「通过」不算数。"
+    return (
+        f"结论：打回——变异得分 {report.score:.0%} 低于通过阈值 {threshold:.0%}，"
+        "这个「通过」不算数。"
+    )
 
 
 def _mutate_node(node: ast.AST) -> list[tuple[ast.AST, str]]:
@@ -92,42 +131,146 @@ class _Injector(ast.NodeTransformer):
         return super().visit(node)
 
 
-def run_mutation(source_path: str, test_cmd: str) -> float:
-    """核心：变异 → 跑测试 → 变异得分。返回被杀比例。"""
+def _purge_module_pyc(source_path: str) -> None:
+    """删掉这个模块旁边的 .pyc。
+
+    只设 PYTHONDONTWRITEBYTECODE 不够：那个开关不读旧缓存。源文件大小没变、
+    mtime 又落在同一秒时，解释器会直接跑上一份字节码。
+    """
+    directory = os.path.dirname(os.path.abspath(source_path)) or "."
+    cache = os.path.join(directory, "__pycache__")
+    stem = os.path.splitext(os.path.basename(source_path))[0]
+    if not os.path.isdir(cache):
+        return
+    for name in os.listdir(cache):
+        if name.startswith(stem + "."):
+            try:
+                os.remove(os.path.join(cache, name))
+            except OSError:
+                pass
+
+
+def _child_env(cache_root: str) -> dict[str, str]:
+    """子进程单独用一份空的缓存目录，并且不再把 .pyc 写回源码树。"""
+    env = os.environ.copy()
+    env["PYTHONDONTWRITEBYTECODE"] = "1"
+    env["PYTHONPYCACHEPREFIX"] = cache_root
+    return env
+
+
+def _run_cmd(cmd: str, timeout: float, env: dict[str, str], source_path: str) -> tuple[str, int | None]:
+    """跑一条测试命令。返回 (ok|fail|timeout, 退出码)。"""
+    _purge_module_pyc(source_path)
+    run_env = dict(env)
+    # 每个变异体换一个空目录，同长度同秒写入也撞不上上一份字节码。
+    run_env["PYTHONPYCACHEPREFIX"] = tempfile.mkdtemp(prefix="mut-", dir=env["PYTHONPYCACHEPREFIX"])
+    try:
+        result = subprocess.run(
+            cmd,
+            shell=True,
+            capture_output=True,
+            timeout=timeout,
+            env=run_env,
+        )
+    except subprocess.TimeoutExpired:
+        return "timeout", None
+    if result.returncode == 0:
+        return "ok", 0
+    return "fail", result.returncode
+
+
+def _finish(report: MutationReport, threshold: float) -> MutationReport:
+    print(_conclusion(report, threshold))
+    return report
+
+
+def run_mutation(
+    source_path: str,
+    test_cmd: str,
+    timeout: float = DEFAULT_TIMEOUT,
+    threshold: float | None = None,
+) -> MutationReport:
+    """变异 → 跑测试 → 结论。基线不绿、没有变异点，都不给「通过」。"""
+    if threshold is None:
+        threshold = PASS_THRESHOLD
     with open(source_path, encoding="utf-8") as f:
         original = f.read()
-    mutants = generate_mutants(original)
-    if not mutants:
-        print("没有找到变异点。")
-        return 1.0
+    cache_root = tempfile.mkdtemp(prefix="xizi-pyc-")
+    env = _child_env(cache_root)
+    try:
+        status, code = _run_cmd(test_cmd, timeout, env, source_path)
+        if status == "timeout":
+            return _finish(MutationReport(
+                "无法判定", None, 0, 0,
+                "基线测试超时。原始测试自己都跑不完，变异得分不能当成通过。",
+            ), threshold)
+        if status != "ok":
+            return _finish(MutationReport(
+                "无法判定", None, 0, 0,
+                f"基线测试没有通过（退出码 {code}）。测试本来就是红的，或者命令写错，变异得分不能当成通过。",
+            ), threshold)
 
-    killed = 0
-    for i, (mutated, desc) in enumerate(mutants):
-        try:
-            with open(source_path, "w", encoding="utf-8") as f:
-                f.write(mutated)
-            result = subprocess.run(test_cmd, shell=True, capture_output=True, timeout=60)
-            if result.returncode != 0:
-                killed += 1
-                print(f"  变异体 {i+1:2d} [{desc}]: 被杀 ✓")
-            else:
-                print(f"  变异体 {i+1:2d} [{desc}]: 存活——假绿！✗")
-        finally:
-            with open(source_path, "w", encoding="utf-8") as f:
-                f.write(original)  # 无条件恢复原文件
+        mutants = generate_mutants(original)
+        if not mutants:
+            return _finish(MutationReport(
+                "无法判定", None, 0, 0,
+                "没有找到变异点。没有变异点不等于测试有效。",
+            ), threshold)
 
-    score = killed / len(mutants)
-    print(f"\n变异得分：{killed}/{len(mutants)}（{score:.0%}）——被杀=测试真能抓 bug；存活=假绿")
-    return score
+        killed = 0
+        for i, (mutated, desc) in enumerate(mutants):
+            try:
+                with open(source_path, "w", encoding="utf-8") as f:
+                    f.write(mutated)
+                status, _code = _run_cmd(test_cmd, timeout, env, source_path)
+                if status == "timeout":
+                    killed += 1
+                    print(f"  变异体 {i+1:2d} [{desc}]: 被杀（超时）✓")
+                elif status != "ok":
+                    killed += 1
+                    print(f"  变异体 {i+1:2d} [{desc}]: 被杀 ✓")
+                else:
+                    print(f"  变异体 {i+1:2d} [{desc}]: 存活——假绿！✗")
+            finally:
+                with open(source_path, "w", encoding="utf-8") as f:
+                    f.write(original)
+                _purge_module_pyc(source_path)
+
+        score = killed / len(mutants)
+        verdict = verdict_from_score(score, threshold)
+        print(
+            f"\n变异得分：{killed}/{len(mutants)}（{score:.0%}）"
+            f"——通过阈值 {threshold:.0%}；被杀=测试真能抓 bug；存活=假绿\n"
+        )
+        reason = "达到通过阈值" if verdict == "通过" else "低于通过阈值"
+        return _finish(MutationReport(verdict, score, killed, len(mutants), reason), threshold)
+    finally:
+        shutil.rmtree(cache_root, ignore_errors=True)
 
 
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("source", help="被测源文件（会被临时变异，测后恢复）")
     ap.add_argument("--cmd", required=True, help="测试命令，如 python -m pytest tests/test_x.py")
+    ap.add_argument(
+        "--threshold",
+        type=float,
+        default=PASS_THRESHOLD,
+        help=f"通过阈值，默认 {PASS_THRESHOLD}（与 SKILL、bench 组 4 同一处）",
+    )
+    ap.add_argument(
+        "--timeout",
+        type=float,
+        default=DEFAULT_TIMEOUT,
+        help="单条测试命令的超时秒数；超时的变异体算被杀，不让整个工具崩掉",
+    )
     args = ap.parse_args(argv)
-    score = run_mutation(args.source, args.cmd)
-    return 0 if score >= 0.5 else 1
+    report = run_mutation(args.source, args.cmd, timeout=args.timeout, threshold=args.threshold)
+    if report.verdict == "通过":
+        return 0
+    if report.verdict == "无法判定":
+        return 2
+    return 1
 
 
 if __name__ == "__main__":
