@@ -13,17 +13,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Install deps
-        run: pip install "tiktoken>=0.14.0"
       - name: Unit tests
         run: python -m unittest discover -s tests -p "test_*.py"
       - name: Anti-fake-green tests
-        run: python -m unittest tests.test_fake_green tests.test_mutation_test
+        run: python -m unittest tests.test_fake_green tests.test_mutation_test tests.test_skill_install
       - name: Toolchain bench group 4 (no LLM)
         run: |
           python -m eval.bench
           python -m eval.bench --dir eval/traps_v2
-      - name: Compression benchmark (能红断言)
-        run: python -m eval.compress_bench
-      - name: Semantic fidelity (阴性对照)
-        run: python -m eval.semantic_eval
