@@ -81,6 +81,48 @@ def run_hook(repo: Path, payload: dict, *, extra_env: dict | None = None) -> sub
     )
 
 
+def _posix(path: Path) -> str:
+    """Git Bash 认 /c/Users/...，不认带反斜杠的 Windows 路径。"""
+    if os.name != "nt":
+        return str(path)
+    drive, rest = os.path.splitdrive(str(path.resolve()))
+    if not drive:
+        return rest.replace("\\", "/")
+    return "/" + drive[0].lower() + rest.replace("\\", "/")
+
+
+def working_bash() -> str:
+    """跳过 System32 里那个没装发行版就会失败的 WSL bash.exe。"""
+    candidates: list[str] = []
+    if os.name == "nt":
+        for key in ("ProgramFiles", "ProgramFiles(x86)"):
+            root = os.environ.get(key)
+            if not root:
+                continue
+            candidates.append(str(Path(root) / "Git" / "bin" / "bash.exe"))
+            candidates.append(str(Path(root) / "Git" / "usr" / "bin" / "bash.exe"))
+    found = shutil.which("bash")
+    if found:
+        candidates.append(found)
+    seen: set[str] = set()
+    for candidate in candidates:
+        if candidate in seen or not Path(candidate).is_file():
+            continue
+        seen.add(candidate)
+        probe = subprocess.run(
+            [candidate, "-c", "echo ok"],
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+        )
+        if probe.returncode == 0 and "ok" in (probe.stdout or ""):
+            return candidate
+    raise AssertionError(
+        "找不到能执行脚本的 bash。Windows 上 PATH 里的 bash 经常是没装发行版的 WSL。"
+    )
+
+
 def run_cli(repo: Path, args: list[str], *, extra_env: dict | None = None) -> subprocess.CompletedProcess[str]:
     env = os.environ.copy()
     env["PYTHONPATH"] = str(ROOT)
@@ -383,9 +425,11 @@ class HookInstall(unittest.TestCase):
         env["PYTHONPATH"] = str(ROOT)
         env["HOME"] = str(self.home)
         env["USERPROFILE"] = str(self.home)
+        env["PYTHONIOENCODING"] = "utf-8"
         return subprocess.run(
             [sys.executable, "-m", "xizi_rujin", "install-hook", *args],
             text=True,
+            encoding="utf-8",
             capture_output=True,
             cwd=self.proj,
             env=env,
@@ -396,9 +440,11 @@ class HookInstall(unittest.TestCase):
         env["PYTHONPATH"] = str(ROOT)
         env["HOME"] = str(self.home)
         env["USERPROFILE"] = str(self.home)
+        env["PYTHONIOENCODING"] = "utf-8"
         return subprocess.run(
             [sys.executable, "-m", "xizi_rujin", "uninstall-hook", *args],
             text=True,
+            encoding="utf-8",
             capture_output=True,
             cwd=self.proj,
             env=env,
@@ -472,35 +518,48 @@ class HookInstall(unittest.TestCase):
         self.assertTrue(commands[0].get("args"))
         self.assertNotIn("continue", json.dumps(data))
 
-    def test_install_sh_hook_flag_is_opt_in(self) -> None:
-        if shutil.which("bash") is None:
-            self.skipTest("bash 不在 PATH 上")
+    def _run_install_sh(self, bash: str, bindir: Path, args: list[str]) -> subprocess.CompletedProcess[str]:
         env = os.environ.copy()
-        env["HOME"] = str(self.home)
         env["USERPROFILE"] = str(self.home)
+        env["PYTHONIOENCODING"] = "utf-8"
+        # $0 占位，后面两个参数在 bash 里改成 POSIX 的 HOME 和 PATH，再 exec 脚本。
+        # $BASH 是当前这个能跑的解释器。不要再去 PATH 里找 bash，Windows 上那是 WSL。
+        command = 'export HOME="$1"; shift; export PATH="$1:$PATH"; shift; script="$1"; shift; exec "$BASH" "$script" "$@"'
+        return subprocess.run(
+            [
+                bash,
+                "-c",
+                command,
+                "bash",
+                _posix(self.home),
+                _posix(bindir),
+                str(ROOT / "install.sh"),
+                *args,
+            ],
+            cwd=self.proj,
+            env=env,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+        )
+
+    def test_install_sh_hook_flag_is_opt_in(self) -> None:
+        bash = working_bash()
         bindir = Path(self._tmp.name) / "bin"
         bindir.mkdir()
         for name in ("claude", "codex", "opencode"):
             stub = bindir / name
-            stub.write_text("#!/bin/sh\nexit 0\n", encoding="utf-8")
+            stub.write_text("#!/bin/sh\nexit 0\n", encoding="utf-8", newline="\n")
             stub.chmod(stub.stat().st_mode | stat.S_IEXEC)
-        env["PATH"] = str(bindir) + os.pathsep + env.get("PATH", "")
-        plain = subprocess.run(
-            ["bash", str(ROOT / "install.sh")],
-            cwd=self.proj,
-            env=env,
-            capture_output=True,
-            text=True,
-        )
+            # Git Bash 的 command -v 按 PATHEXT 找 .cmd，认不出没后缀的脚本。
+            if os.name == "nt":
+                cmd = bindir / f"{name}.cmd"
+                cmd.write_text("@exit /b 0\r\n", encoding="ascii")
+        plain = self._run_install_sh(bash, bindir, [])
         self.assertEqual(plain.returncode, 0, plain.stdout + plain.stderr)
         self.assertFalse((self.proj / ".claude" / "settings.json").exists())
-        hooked = subprocess.run(
-            ["bash", str(ROOT / "install.sh"), "--hook", "project"],
-            cwd=self.proj,
-            env=env,
-            capture_output=True,
-            text=True,
-        )
+        hooked = self._run_install_sh(bash, bindir, ["--hook", "project"])
         self.assertEqual(hooked.returncode, 0, hooked.stdout + hooked.stderr)
         settings = json.loads((self.proj / ".claude" / "settings.json").read_text(encoding="utf-8"))
         self.assertIn("Stop", settings["hooks"])

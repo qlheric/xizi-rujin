@@ -72,16 +72,33 @@ if [ "$installed" -eq 0 ] && [ -z "$HOOK_SCOPE" ]; then
   exit 1
 fi
 
-if [ -n "$HOOK_SCOPE" ]; then
-  if command -v python3 >/dev/null 2>&1; then
-    PY=python3
-  elif command -v python >/dev/null 2>&1; then
-    PY=python
+# Git Bash 里 $PWD 是 /c/Users/...。Windows 上的 python.exe 不认这种路径，先转回盘符。
+win_path() {
+  if command -v cygpath >/dev/null 2>&1; then
+    cygpath -w "$1"
   else
+    printf '%s\n' "$1"
+  fi
+}
+
+pick_python() {
+  local candidate
+  for candidate in python3 python; do
+    if command -v "$candidate" >/dev/null 2>&1 && "$candidate" -c "import sys" >/dev/null 2>&1; then
+      printf '%s\n' "$candidate"
+      return 0
+    fi
+  done
+  return 1
+}
+
+if [ -n "$HOOK_SCOPE" ]; then
+  if ! PY="$(pick_python)"; then
     echo "注册钩子需要 Python。"
     exit 1
   fi
-  "$PY" "$HERE/xizi_rujin.py" install-hook --scope "$HOOK_SCOPE" --harness both --project "$PWD"
+  "$PY" "$(win_path "$HERE/xizi_rujin.py")" install-hook \
+    --scope "$HOOK_SCOPE" --harness both --project "$(win_path "$PWD")"
 fi
 
 if [ "$installed" -eq 0 ]; then
