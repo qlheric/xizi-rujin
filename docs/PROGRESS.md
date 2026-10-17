@@ -46,6 +46,7 @@
 - 2026-10-07：升级阶段 5 完成（假绿灯档案 + README 重构，老大验收通过，「拦截假绿」升级收口）——`docs/fake-green-archive.md` 6 篇真实案例（LLM 复核洗白/max_tokens 截断/IE 死代理/keys 违规/真弱断言/出题错误），每篇四件事（原来为何通过/漏了什么/什么暴露/怎么修）+ 总教训（假绿五形态）；README 按「拦截假绿」重构：第一屏假绿灯演示 + 三问出处 + 硬工具 + 四组对照数据 + 诚实盲区；**5 阶段全部完成**。
 - 2026-10-07：对外物料更新（定位从省 token 变拦截假绿）——2 个 awesome PR 的 README 行已改成「fake-green interceptor」新描述（亲验 patch 确认）；PR 标题还是旧的（travisvn #1302「Add xizi-rujin skill to README」/ VoltAgent #1164「Chinese token compression」）待老大改；repo About 描述待改；仓库名拍「暂不改」（惜字如金=对每个字较真的新诠释还搭得上，GitHub rename 有 301 重定向以后可改）。
 - 2026-10-07：对外物料全部更新完成（亲验四样）——PR 标题 ×2 改「Add xizi-rujin — fake-green interceptor skill (老审计)」✓、repo About 改「老审计·拦截假绿」✓、qlheric Profile README 改「专治一种病：AI 说成功了其实没有」✓、PR README 行 ✓；仓库名暂不改（老大默认）。
+- 2026-10-15：GitHub「留言」处置——查证：VoltAgent #1164 被 maintainer（necatiozmen）关闭（2 天前，无文字评论、No reviews）；travisvn #1302 仍 open 无评论；xizi-rujin 自身 issues 0 / discussions 未开 / PR #2-#5 无外部留言。老大拍「先不追」，只盯 travisvn #1302。
 
 ## P2 评测数字（真实实测，2026-10-06）
 
