@@ -12,7 +12,7 @@ from contextlib import redirect_stdout
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from eval.fake_green import main, scan_source
+from eval.fake_green import __version__, main, scan_source
 
 
 def _run_main(argv: list[str]) -> tuple[int, str]:
@@ -24,6 +24,34 @@ def _run_main(argv: list[str]) -> tuple[int, str]:
 
 def _kinds(source: str) -> list[str]:
     return [item["kind"] for item in scan_source(textwrap.dedent(source))]
+
+
+class CliDiscoverabilityTests(unittest.TestCase):
+    def test_help_prints_usage_and_exits_0(self) -> None:
+        rc, out = _run_main(["--help"])
+        self.assertEqual(rc, 0)
+        self.assertIn("用法", out)
+        self.assertIn("python -m eval.fake_green", out)
+        self.assertNotIn("无法判定", out)
+        self.assertNotIn("路径不存在", out)
+
+    def test_help_is_not_treated_as_path(self) -> None:
+        """旧实现把 --help 当路径，打印「路径不存在」并 exit 2。"""
+        rc, out = _run_main(["--help"])
+        self.assertEqual(rc, 0)
+        self.assertNotIn("路径不存在", out)
+        self.assertNotIn("无法判定", out)
+
+    def test_version_prints_version_and_exits_0(self) -> None:
+        rc, out = _run_main(["--version"])
+        self.assertEqual(rc, 0)
+        self.assertEqual(out.strip(), __version__)
+        self.assertRegex(__version__, r"^\d+\.\d+\.\d+$")
+
+    def test_missing_args_still_exits_2(self) -> None:
+        rc, out = _run_main([])
+        self.assertEqual(rc, 2)
+        self.assertIn("用法", out)
 
 
 class DiscoveryTests(unittest.TestCase):
