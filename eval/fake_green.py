@@ -1,6 +1,6 @@
 """F: 假绿静态检测器——用 AST 扫测试里的作弊和弱断言
 R: code:eval/fake_green.py 独立可跑；供老审计 SKILL 调用
-A: python -m eval.fake_green <test_file_or_dir>
+A: python -m eval.fake_green <test_file_or_dir>；--help / --version 可发现
 S: 目录同时认 test*.py 与 *_test.py；一个测试文件都没扫到时是「无法判定」，不是清洁通过
 """
 
@@ -9,6 +9,9 @@ from __future__ import annotations
 import ast
 import os
 import sys
+
+__version__ = "0.1.0"
+_USAGE = "用法：python -m eval.fake_green <测试文件或目录>"
 
 # 这些调用名本身就是「跳过」，正则时代漏掉了 skipTest / importorskip / skipIf。
 _SKIP_TAILS = {"skip", "skipif", "skipIf", "skipUnless"}
@@ -397,8 +400,17 @@ def scan_path(path: str) -> list[dict]:
 
 
 def main(argv: list[str] | None = None) -> int:
-    if not argv or len(argv) < 1:
-        print("用法：python -m eval.fake_green <测试文件或目录>")
+    # None / [] 都当「没给位置参数」；__main__ 会显式传入 sys.argv[1:]。
+    if argv is None:
+        argv = []
+    if argv[:1] in (["-h"], ["--help"]):
+        print(_USAGE)
+        return 0
+    if argv[:1] in (["-V"], ["--version"]):
+        print(__version__)
+        return 0
+    if not argv:
+        print(_USAGE)
         return 2
     target = argv[0]
     if not os.path.exists(target):
