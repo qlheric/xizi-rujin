@@ -10,6 +10,7 @@ import argparse
 import ast
 import os
 import shutil
+import signal
 import subprocess
 import sys
 import tempfile
@@ -262,25 +263,69 @@ def _child_env(cache_root: str) -> dict[str, str]:
     return env
 
 
+def _popen_group_kwargs() -> dict:
+    """让子进程自成一组，超时才能整树杀掉（不只杀 shell）。"""
+    if os.name == "nt":
+        return {"creationflags": subprocess.CREATE_NEW_PROCESS_GROUP}
+    return {"start_new_session": True}
+
+
+def _kill_process_tree(proc: subprocess.Popen[bytes]) -> None:
+    """杀 Popen 进程及其整棵子树。Windows 用 taskkill /T；POSIX 用 killpg。"""
+    if proc.poll() is not None:
+        return
+    if os.name == "nt":
+        # shell=True 时 TerminateProcess 只杀 cmd；死循环子进程仍占着管道。
+        subprocess.run(
+            ["taskkill", "/T", "/F", "/PID", str(proc.pid)],
+            capture_output=True,
+            check=False,
+        )
+    else:
+        try:
+            os.killpg(proc.pid, signal.SIGKILL)
+        except (ProcessLookupError, PermissionError, OSError):
+            pass
+    try:
+        proc.kill()
+    except OSError:
+        pass
+
+
 def _run_cmd(cmd: str, timeout: float, env: dict[str, str], source_path: str) -> tuple[str, int | None]:
-    """跑一条测试命令。返回 (ok|fail|timeout, 退出码)。"""
+    """跑一条测试命令。返回 (ok|fail|timeout, 退出码)。
+
+    必须用可控 Popen：超时时杀整棵进程树再 communicate 回收管道。
+    旧写法 subprocess.run(shell=True, timeout=...) 只杀 shell，子进程继续占 stdout，调用方永久挂起。
+    """
     _purge_module_pyc(source_path)
     run_env = dict(env)
     # 每个变异体换一个空目录，同长度同秒写入也撞不上上一份字节码。
     run_env["PYTHONPYCACHEPREFIX"] = tempfile.mkdtemp(prefix="mut-", dir=env["PYTHONPYCACHEPREFIX"])
+    proc = subprocess.Popen(
+        cmd,
+        shell=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        env=run_env,
+        **_popen_group_kwargs(),
+    )
     try:
-        result = subprocess.run(
-            cmd,
-            shell=True,
-            capture_output=True,
-            timeout=timeout,
-            env=run_env,
-        )
+        _stdout, _stderr = proc.communicate(timeout=timeout)
     except subprocess.TimeoutExpired:
+        _kill_process_tree(proc)
+        try:
+            proc.communicate(timeout=5)
+        except subprocess.TimeoutExpired:
+            _kill_process_tree(proc)
+            try:
+                proc.communicate(timeout=1)
+            except subprocess.TimeoutExpired:
+                pass
         return "timeout", None
-    if result.returncode == 0:
+    if proc.returncode == 0:
         return "ok", 0
-    return "fail", result.returncode
+    return "fail", proc.returncode
 
 
 def _finish(report: MutationReport, threshold: float) -> MutationReport:

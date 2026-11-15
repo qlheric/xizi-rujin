@@ -7,6 +7,7 @@
 from __future__ import annotations
 
 import os
+import shutil
 import stat
 import subprocess
 import sys
@@ -44,11 +45,13 @@ class SkillInstallE2E(unittest.TestCase):
             env.pop("OPENCODE_CONFIG", None)
 
             installed = subprocess.run(
-                ["bash", str(ROOT / "install.sh")],
+                [shutil.which("bash") or "bash", str(ROOT / "install.sh")],
                 cwd=ROOT,
                 env=env,
                 capture_output=True,
                 text=True,
+                encoding="utf-8",
+                errors="replace",
             )
             self.assertEqual(
                 installed.returncode,
@@ -231,6 +234,8 @@ class SkillInstallE2E(unittest.TestCase):
             env=env,
             capture_output=True,
             text=True,
+            encoding="utf-8",
+            errors="replace",
         )
 
 

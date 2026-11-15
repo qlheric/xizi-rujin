@@ -10,6 +10,7 @@ import io
 import os
 import sys
 import tempfile
+import time
 import unittest
 from contextlib import redirect_stdout
 from unittest import mock
@@ -17,7 +18,7 @@ from unittest import mock
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from eval.bench import group4_tool
-from eval.mutation_test import generate_mutants, main, run_mutation
+from eval.mutation_test import _child_env, _run_cmd, generate_mutants, main, run_mutation
 
 
 def _run_main(argv: list[str]) -> tuple[int, str]:
@@ -108,6 +109,20 @@ class MutationReportTests(unittest.TestCase):
         self.assertEqual(verdict_from_score(0.799), "打回")
         self.assertEqual(verdict_from_score(0.5), "打回")
 
+    def test_run_cmd_timeout_returns_without_hang(self) -> None:
+        """死循环子进程必须随分树一起被杀；否则 communicate 永久挂在管道上。"""
+        src = self._write("noop.py", "x = 1\n")
+        cache_root = tempfile.mkdtemp(prefix="xizi-pyc-")
+        env = _child_env(cache_root)
+        cmd = f'"{sys.executable}" -c "while True: pass"'
+        started = time.monotonic()
+        status, code = _run_cmd(cmd, 0.5, env, src)
+        elapsed = time.monotonic() - started
+        self.assertEqual(status, "timeout")
+        self.assertIsNone(code)
+        # 旧实现只杀 shell，这里会挂到外层 watchdog；修好后应远小于数秒。
+        self.assertLess(elapsed, 8.0, f"_run_cmd hung after timeout: {elapsed:.1f}s")
+
     def test_timeout_counts_as_killed(self) -> None:
         """死循环变异体算被杀（超时），不能把整个工具打崩。"""
         src = self._write(
@@ -119,12 +134,15 @@ class MutationReportTests(unittest.TestCase):
         self._write("test_f.py", "from sut import f\nassert f(0) == 1\n")
         cmd = f'"{sys.executable}" test_f.py'
         buf = io.StringIO()
+        started = time.monotonic()
         with redirect_stdout(buf):
             report = run_mutation(src, cmd, timeout=1)
+        elapsed = time.monotonic() - started
         out = buf.getvalue()
         self.assertIn("超时", out)
         self.assertEqual(report.verdict, "打回")
         self.assertGreaterEqual(report.killed, 1)
+        self.assertLess(elapsed, 30.0, f"run_mutation hung on timeout mutants: {elapsed:.1f}s")
         with open(src, encoding="utf-8") as fh:
             self.assertEqual(fh.read(), original)
 
@@ -334,11 +352,15 @@ class BenchThresholdTests(unittest.TestCase):
         try:
             with tempfile.TemporaryDirectory() as tmp:
                 os.chdir(tmp)
-                with open("sut.py", "w", encoding="utf-8") as fh:
-                    fh.write("def f(x):\n    return x + 1 + 2 + 3 + 4 if x == 1 else 7\n")
-                with open("test_sut.py", "w", encoding="utf-8") as fh:
-                    fh.write("from sut import f\nassert f(1) == 11\n")
-                released, reason = group4_tool("sut", os.path.join(tmp, "sut.py"), os.path.join(tmp, "test_sut.py"))
+                try:
+                    with open("sut.py", "w", encoding="utf-8") as fh:
+                        fh.write("def f(x):\n    return x + 1 + 2 + 3 + 4 if x == 1 else 7\n")
+                    with open("test_sut.py", "w", encoding="utf-8") as fh:
+                        fh.write("from sut import f\nassert f(1) == 11\n")
+                    released, reason = group4_tool("sut", os.path.join(tmp, "sut.py"), os.path.join(tmp, "test_sut.py"))
+                finally:
+                    # 必须先离开 tmp，再让 TemporaryDirectory 清理；Windows 不能删当前目录。
+                    os.chdir(old_cwd)
         finally:
             os.chdir(old_cwd)
             if old_env is None:
