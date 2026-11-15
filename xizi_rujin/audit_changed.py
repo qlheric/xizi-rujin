@@ -35,10 +35,26 @@ def quote(text: str) -> str:
     return '"' + text.replace('"', '\\"') + '"'
 
 
+def _uses_unittest(path: Path) -> bool:
+    """含 unittest + TestCase 才走 discover；读失败当非 unittest，保持旧路径。"""
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return False
+    return "unittest" in text and "TestCase" in text
+
+
 def test_command(tests: list[Path]) -> str:
     py = quote(sys.executable)
     if len(tests) == 1:
-        return f"{py} {quote(str(tests[0]))}"
+        test = tests[0]
+        if _uses_unittest(test):
+            # 同目录单文件 discover：无 main 也会真跑；0 测试 exit 5，失败非 0
+            return (
+                f"{py} -m unittest discover "
+                f"-s {quote(str(test.parent))} -p {quote(test.name)}"
+            )
+        return f"{py} {quote(str(test))}"
     script = "import runpy,sys; [runpy.run_path(p, run_name='__main__') for p in sys.argv[1:]]"
     args = " ".join(quote(str(path)) for path in tests)
     return f"{py} -c {quote(script)} {args}"
